@@ -1,7 +1,7 @@
 lua11
 =====
 
-lua11 is a very lightweight binding lua with C++11 (less than 30k)
+lua11 is a very lightweight binding lua with C++11 (less than 30kb of code)
 
 with lua11 you can easily read, write and create lua's values, tables and functions
 
