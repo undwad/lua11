@@ -9,7 +9,4 @@ moreover you can easily bind std::function and lambdas to lua code
 
 the best way to learn how to use lua11 is to debug example.cpp step by step reading its comments
 
-=====
-2013.09.19 15.38.47
-undwad
-samara, russia
+2013.09.19 15.38.47 undwad, samara, russia
