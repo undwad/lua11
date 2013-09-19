@@ -57,6 +57,7 @@ build/mss/stations.cfg
 build/ai.bat
 *.db*
 *.journal
+stack.txt
 
 Debug/
 Release/
