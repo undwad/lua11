@@ -1,5 +1,5 @@
 /* 
-**	Table.h 2013.09.20 10.28.24 undwad
+**	Table.h 2013.09.20 10.48.42 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -91,54 +91,84 @@ namespace lua11
 		template <typename T> bool getKeys(vector<T>&  keys)
 		{
 			keys.clear();
-			return iterate([this, &keys]()
+			bool result = false;
+			if (TableRef::push(L))
 			{
-				T key;
-				lua_pop(L, 1);
-				if(Stack::is(L, &key))
+				result = true;
+				lua_pushnil(L);
+				while (lua_next(L, -2))
 				{
-					Stack::get(L, &key);
-					keys.push_back(key);
-					return true;
+					T key;
+					lua_pop(L, 1);
+					if (Stack::is(L, &key))
+					{
+						Stack::get(L, &key);
+						keys.push_back(key);
+					}
+					else
+					{
+						result = false;
+						break;
+					}
 				}
-				return false;
-			});
+			}
+			lua_pop(L, 1);
+			return result;
 		}
 
 		template <typename T> bool getValues(vector<T>&  values)
 		{
 			values.clear();
-			return iterate([this, &values]()
+			bool result = false;
+			if (TableRef::push(L))
 			{
-				T value;
-				if(Stack::is(L, &value))
+				result = true;
+				lua_pushnil(L);
+				while (lua_next(L, -2))
 				{
-					Stack::pop(L, &value);
-					values.push_back(value);
-					return true;
+					T value;
+					if (Stack::is(L, &value))
+					{
+						Stack::pop(L, &value);
+						values.push_back(value);
+					}
+					else
+					{
+						result = false;
+						break;
+					}
 				}
-				return false;
-			});
+			}
+			lua_pop(L, 1);
+			return result;
 		}
 
 		template <typename K, typename V> bool getMap(map<K, V>& map)
 		{
 			map.clear();
-			return iterate([this, &map]()
+			bool result = false;
+			if (TableRef::push(L))
 			{
-				pair<K, V> pair;
-				if(Stack::is(L, &pair.second))
+				result = true;
+				lua_pushnil(L);
+				while (lua_next(L, -2))
 				{
-					Stack::pop(L, &pair.second);
-					if(Stack::is(L, &pair.first))
+					pair<K, V> pair;
+					if (Stack::is(L, &pair.second))
 					{
+						Stack::pop(L, &pair.second);
 						Stack::get(L, &pair.first);
 						map.insert(pair);
-						return true;
+					}
+					else
+					{
+						result = false;
+						break;
 					}
 				}
-				return false;
-			});
+			}
+			lua_pop(L, 1);
+			return result;
 		}
 
 #		define _SET(T, N, K, F, KV) \
@@ -266,24 +296,6 @@ namespace lua11
 
 #		undef TYPENAME
 
-	private:
-		bool iterate(function<bool()> callback)
-		{
-			bool result = false;
-			if(TableRef::push(L))
-			{
-				result = true;
-				lua_pushnil(L);
-				while(lua_next(L, -2)) 
-					if(!callback())
-					{
-						result = false;
-						break;
-					}
-			}
-			lua_pop(L, 1);
-			return result;
-		}
 	};
 }
 
