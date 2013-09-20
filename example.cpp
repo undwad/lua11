@@ -1,8 +1,8 @@
 	
 /*
-** example.cpp 2013.09.19 14.50.26 undwad
+** example.cpp 2013.09.20 09.59.05 undwad
 ** lua11 is a very lightweight binding lua with C++11
-** https://github.com/lua11
+** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
 */
 
@@ -51,9 +51,7 @@ int main(int argc, char* argv[])
 		if (script) //script successfully loaded
 		{
 			string str; //string variable for result
-			if (script("Nick", &str)) //execute script
-				cout << "result: " << str << endl; //print result
-			else
+			if (!script("Nick", &str)) //execute script
 				cout << script.error << endl; //print error 
 
 			//script execution returned error because script returns function not string
@@ -217,7 +215,7 @@ int main(int argc, char* argv[])
 				print(table.error); //print error because table yet does not have metatable
 
 			metatable.createNew(); //create metatable
-			Callback<string, Table, string> __index(&*L, [](Table& table, string key) //define callback __index metamethod
+			Callback<string, Table, string> __index(&*L, [](Table table, string key) //define callback __index metamethod
 			{
 				string value;
 				return string(key) + "_" + (table.rawget(key, &value) ? value : "nil"); //return key_value string

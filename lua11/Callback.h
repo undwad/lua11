@@ -1,8 +1,8 @@
 
 /*
-** Callback.h 2013.09.19 10.47.38 undwad
+** Callback.h 2013.09.20 09.59.05 undwad
 ** lua11 is a very lightweight binding lua with C++11
-** https://github.com/lua11 mailto:undwad@mail.ru
+** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
 */
 
@@ -42,7 +42,7 @@ namespace lua11
 		function<R(T...)> func;
 
 		bool param(lua_State* L, int i) { return true; }
-		template <typename T0, typename ...T> bool param(lua_State* L, int i, T0& p0, T&... p) 
+		template <typename P0, typename ...P> bool param(lua_State* L, int i, P0& p0, P&... p) 
 		{ 
 			if(is(L, &p0, i))
 			{

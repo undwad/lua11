@@ -2,7 +2,7 @@
 /*
 ** Table.h 2013.09.19 14.50.26 undwad
 ** lua11 is a very lightweight binding lua with C++11
-** https://github.com/lua11 mailto:undwad@mail.ru
+** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
 */
 
