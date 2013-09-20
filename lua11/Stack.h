@@ -1,6 +1,6 @@
 
 /*
-** Stack.h 2013.09.19 10.47.38 undwad
+** Stack.h 2013.09.20 10.28.24 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -45,9 +45,6 @@ namespace lua11
 			print(L, file); 
 			file.close();
 		}
-
-	protected:
-		string typeName(lua_State* L, int i = -1) { return lua_typename(L, lua_type(L, i)); }
 
 		void push(lua_State* L, bool p) { lua_pushboolean(L, p); }
 		void push(lua_State* L, unsigned char p) { lua_pushunsigned(L, p); }

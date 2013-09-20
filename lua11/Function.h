@@ -1,6 +1,6 @@
 
 /*
-** Function.h 2013.09.19 10.47.38 undwad
+** Function.h 2013.09.20 10.28.24 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -116,7 +116,7 @@ namespace lua11
 					} \
 					else \
 					{ \
-						error = string("type mismatch "#T" <> ") + typeName(L, index); \
+						error = string("type mismatch "#T" <> ") + lua_typename(L, lua_type(L, index)); \
 						lua_settop(L, index - 1); \
 						return false; \
 					} \

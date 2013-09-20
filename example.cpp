@@ -126,6 +126,12 @@ int main(int argc, char* argv[])
 				for (auto key : keys) //print table keys
 					print(key);
 
+				//print items type values
+				print(table.type("num"), table.type("text"), table.type("subtable"), table.type("someparam"));
+
+				//print items type names
+				print(table.typeName("num"), table.typeName("text"), table.typeName("subtable"), table.typeName("someparam"));
+
 				int num;
 				string text;
 				if (table.get("num", &num) && table.get("text", &text)) //get table fields
@@ -198,7 +204,7 @@ int main(int argc, char* argv[])
 	}
 
 	//EXAMPLE 4
-	//shows how call std::function from lua
+	//shows how call std::function from lua and create lua metatables
 	{
 		auto func = [](int a, int b) { return (float)a / b; }; //define callback anon function
 		Callback<float, int, int> callback(&*L, func); //callback holds std::function<float(int, int)>

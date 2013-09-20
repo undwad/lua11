@@ -1,6 +1,5 @@
 
-/*
-** Table.h 2013.09.19 14.50.26 undwad
+/* Table.h 2013.09.20 10.28.24 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -203,7 +202,7 @@ namespace lua11
 					} \
 					else \
 					{ \
-						error = string("type mismatch "#T" <> ") + typeName(L); \
+						error = string("type mismatch "#T" <> ") + lua_typename(L, lua_type(L, -1)); \
 						lua_pop(L, 1); \
 					} \
 				} \
@@ -239,6 +238,33 @@ namespace lua11
 
 #		undef GET
 #		undef _GET
+
+#		define TYPE(K, KV)	\
+			int type(K) \
+			{ \
+				int result = LUA_TNONE; \
+				if (TableRef::push(L)) \
+				{ \
+					Stack::push(L, KV); \
+					lua_gettable(L, -2); \
+					result = lua_type(L, -1); \
+					lua_pop(L, 1); \
+				} \
+				lua_pop(L, 1); \
+				return result; \
+			}
+
+		TYPE(const string& key, key.c_str())
+		TYPE(int key, key)
+
+#		undef TYPE
+
+#		define TYPENAME(K, KV) string typeName(K) { return lua_typename(L, type(KV)); }
+
+		TYPENAME(const string& key, key)
+		TYPENAME(int key, key)
+
+#		undef TYPENAME
 
 	private:
 		bool iterate(function<bool()> callback)
