@@ -1,5 +1,5 @@
 /*
-** Callback.h 2013.09.20 09.59.05 undwad
+** Callback.h 2013.09.20 12.01.32 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -8,7 +8,7 @@
 #ifndef _LUA11_CALLBACK_H__
 #define _LUA11_CALLBACK_H__
 
-namespace lua11 
+namespace lua11
 {
 	template <typename R, typename ...T> class Callback : public CallbackRef, protected Stack
 	{
@@ -22,16 +22,16 @@ namespace lua11
 			lua_setglobal(L, name.c_str());
 			return true;
 		}
-	
+
 	protected:
-		virtual bool pop(lua_State* L) 
-		{ 
+		virtual bool pop(lua_State* L)
+		{
 			lua_pop(L, 1);
-			return false; 
+			return false;
 		}
 
-		virtual bool push(lua_State* L) const 
-		{ 
+		virtual bool push(lua_State* L) const
+		{
 			lua_pushlightuserdata(L, (void*)this);
 			lua_pushcclosure(L, &callback, 1);
 			return true;
@@ -41,8 +41,8 @@ namespace lua11
 		function<R(T...)> func;
 
 		bool param(lua_State* L, int i) { return true; }
-		template <typename P0, typename ...P> bool param(lua_State* L, int i, P0& p0, P&... p) 
-		{ 
+		template <typename P0, typename ...P> bool param(lua_State* L, int i, P0& p0, P&... p)
+		{
 			if(is(L, &p0, i))
 			{
 				get(L, &p0, i);
@@ -50,7 +50,7 @@ namespace lua11
 			}
 			return false;
 		}
-		
+
 		int callfunc(lua_State *L)
 		{
 			tuple<T...> p;
@@ -62,7 +62,7 @@ namespace lua11
 			}
 			else
 			{
-				lua_pushnil(L);  
+				lua_pushnil(L);
 				lua_pushstring(L, "invalid callback parameters");
 				return 2;
 			}
@@ -70,6 +70,11 @@ namespace lua11
 		}
 
 		static int callback(lua_State *L) { return ((Callback<R, T...>*)lua_topointer(L, lua_upvalueindex(1)))->callfunc(L); }
+	};
+
+	struct CallbackFactory
+	{
+        template <typename R, typename ...T> static Callback<R, T...> make(lua_State* l, function<R(T...)> f) { return Callback<R, T...>(l, f); }
 	};
 }
 

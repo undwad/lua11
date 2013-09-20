@@ -1,5 +1,5 @@
 /*
-** example.cpp 2013.09.20 09.59.05 undwad
+** example.cpp 2013.09.20 12.01.32 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 {
 	shared_ptr<lua_State> L(luaL_newstate(), lua_close); //create new lua state
 	luaL_openlibs(&*L); //optionaly open standard lua libraries
-	
+
 	//EXAMPLE 1
 	//shows how to execute lua scripts
 	{
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 		if (script.loadFile("helloworld.lua")) //load script from lua file
 			script(); //execute script
 		else
-			cout << script.error << endl; //print error 
+			cout << script.error << endl; //print error
 
 		SAVESTACK
 	}
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 		{
 			string str; //string variable for result
 			if (!script("Nick", &str)) //execute script
-				cout << script.error << endl; //print error 
+				cout << script.error << endl; //print error
 
 			//script execution returned error because script returns function not string
 			//so we need to do next
@@ -61,22 +61,22 @@ int main(int argc, char* argv[])
 				if (func("Nick", &str)) //execute function
 					cout << str << endl; //print result
 				else
-					cout << func.error << endl; //print error 
+					cout << func.error << endl; //print error
 			}
 			else
-				cout << script.error << endl; //print error 
+				cout << script.error << endl; //print error
 		}
 		else
-			cout << script.error << endl; //print error 
+			cout << script.error << endl; //print error
 
 		SAVESTACK
 	}
 	//every function returns boolean result where true means ok and false means error
 	//every class has string error field that should be checked on error
-	//further will be no error printing 
+	//further will be no error printing
 
 	//EXAMPLE 3
-	//shows how to access lua tables and functions 
+	//shows how to access lua tables and functions
 	Function print(&*L, "print"); //get lua print function
 	print(true, 234, "some text"); //test it
 	//from now and on we will print everything with it because it's cool
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 				for (auto value : values) //print table keys
 					print(value);
 
-				//if table keys are of the same type1 
+				//if table keys are of the same type1
 				//and table values are of the same type2
 				//it is possible to iterate thru pairs of them
 				map<int, string> map; //map for table key/value pairs
@@ -168,13 +168,13 @@ int main(int argc, char* argv[])
 	//shows how create lua tables and values from c++
 	{
 		ScriptText(&*L, "print(table)")(); //print our existing table
-		
+
 		Table table(&*L);
 		if (table.createNew()) //create new table
 			if (table.setGlobal("table")) //set global variable to table
 			{
 				ScriptText(&*L, "print(table)")(); //print it
-				Table subtable(&*L); 
+				Table subtable(&*L);
 				if (subtable.createNew()) //create new table
 					if (subtable.set("param", 123.321)) //set subtable item
 					if (table.set("subtable", subtable)) //set subtable as table item
@@ -208,12 +208,16 @@ int main(int argc, char* argv[])
 	//shows how call std::function from lua and create lua metatables
 	{
 		auto func = [](int a, int b) { return (float)a / b; }; //define callback anon function
+#	if GCC_VERSION >= 30700
+		auto callback = CallbackFactory::make(&*L, misc::make_function(func)); //callback holds std::function<float(int, int)>
+#	else
 		Callback<float, int, int> callback(&*L, func); //callback holds std::function<float(int, int)>
-		callback.setGlobal("mult"); //sets callback as global function
-		ScriptText(&*L, "print(mult(1, 2))")(); //test it
+#	endif
+		callback.setGlobal("div"); //sets callback as global function
+		ScriptText(&*L, "print(div(1, 2))")(); //test it
 
 		ScriptText(&*L, "print(table.someparam)")(); //print our table's absent parameter
-		
+
 		Table table(&*L);
 		if (table.getGlobal("table")) //get table
 		{
@@ -249,3 +253,6 @@ TODO
 1. c++ to lua class binding like in luabind or slb
 2. automatic deduce callback result and parameters type (not very sure if it is possible)
 */
+
+#	if GCC_VERSION >= 30700
+#	endif
