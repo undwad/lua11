@@ -1,4 +1,3 @@
-	
 /*
 ** example.cpp 2013.09.20 09.59.05 undwad
 ** lua11 is a very lightweight binding lua with C++11
@@ -195,10 +194,12 @@ int main(int argc, char* argv[])
 		print((bool)value); //print it
 		value.set("value3", "some text"); //set global value name and value
 		ScriptText(&*L, "print(value3)")(); //print it
+		print(value.type(), value.typeName()); //print value type and name
 		ScriptText(&*L, "value3 = 123.321")(); //change it
 		double v;
 		if (value.get(&v)) //get it
 			print(v); //print it
+		print(value.type(), value.typeName()); //print value type and name
 
 		SAVESTACK
 	}

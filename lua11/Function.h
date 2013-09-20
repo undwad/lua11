@@ -1,4 +1,3 @@
-
 /*
 ** Function.h 2013.09.20 10.28.24 undwad
 ** lua11 is a very lightweight binding lua with C++11

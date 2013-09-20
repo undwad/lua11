@@ -1,4 +1,3 @@
-
 /*
 ** Callback.h 2013.09.20 09.59.05 undwad
 ** lua11 is a very lightweight binding lua with C++11

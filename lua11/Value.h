@@ -1,6 +1,5 @@
-
 /*
-** Value.h 2013.09.19 13.54.47 undwad
+** Value.h 2013.09.20 10.37.31 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -53,6 +52,16 @@ namespace lua11
 		template <typename T> operator T() { T v;  get(&v); return v; }
 
 		template <typename T> bool get(const string& n, T* v) { name = n; return get(v); }
+
+		int type()
+		{
+			lua_getglobal(L, name.c_str());
+			int result = lua_type(L, -1);
+			lua_pop(L, 1); 
+			return result; 
+		}
+
+		string typeName() { return lua_typename(L, type()); }
 
 	protected:
 		mutable lua_State* L;
