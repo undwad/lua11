@@ -1,5 +1,5 @@
 /*
-** Callback.h 2013.09.22 12.15.38 undwad
+** Callback.h 2013.09.22 17.02.02 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -43,7 +43,7 @@ namespace lua11
 		bool param(lua_State* L, int i) { return true; }
 		template <typename P0, typename ...P> bool param(lua_State* L, int i, P0& p0, P&... p)
 		{
-			if(is(L, &p0, i))
+			if (is(L, &p0, i))
 			{
 				get(L, &p0, i);
 				return param(L, i + 1, p...);
@@ -51,25 +51,38 @@ namespace lua11
 			return false;
 		}
 
-		int callfunc(lua_State *L)
+		int paramerror()
 		{
-			tuple<T...> p;
-			function<bool(T&...)> params = [this, L](T&... p) { return param(L, 1, p...); };
-			if(std::misc::forwardref(p, params))
+			lua_pushnil(L);
+			lua_pushstring(L, "invalid callback parameters");
+			return 2;
+		}
+
+		template<typename ...P> int callfunc(lua_State *L, function<void(P...)>)
+		{
+			tuple<P...> p;
+			function<bool(P&...)> params = [this, L](P&... p) { return param(L, 1, p...); };
+			if (std::misc::forwardref(p, params))
+			{
+				std::misc::forward(p, func);
+				return 0;
+			}
+			else return paramerror();
+		}
+
+		template<typename RR, typename ...P> int callfunc(lua_State *L, function<RR(P...)>)
+		{
+			tuple<P...> p;
+			function<bool(P&...)> params = [this, L](P&... p) { return param(L, 1, p...); };
+			if (std::misc::forwardref(p, params))
 			{
 				Stack::push(L, std::misc::forward(p, func));
 				return 1;
 			}
-			else
-			{
-				lua_pushnil(L);
-				lua_pushstring(L, "invalid callback parameters");
-				return 2;
-			}
-			return 0;
+			else return paramerror();
 		}
 
-		static int callback(lua_State *L) { return ((Callback<R, T...>*)lua_topointer(L, lua_upvalueindex(1)))->callfunc(L); }
+		static int callback(lua_State *L) { return ((Callback<R, T...>*)lua_topointer(L, lua_upvalueindex(1)))->callfunc(L, function<R(T...)>()); }
 	};
 
 	struct CallbackFactory
@@ -77,7 +90,7 @@ namespace lua11
 		template <typename R, typename ...T> static Callback<R, T...> make(lua_State* l, function<R(T...)> f) { return Callback<R, T...>(l, f); }
 	};
 
-	#define MAKECALLBACK(l, f) CallbackFactory::make(l, misc::make_function(f))
+#	define MAKECALLBACK(l, f) CallbackFactory::make(l, misc::make_function(f))
 }
 
 #endif // _LUA11_CALLBACK_H__

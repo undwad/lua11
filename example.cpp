@@ -1,5 +1,5 @@
 /*
-** example.cpp 2013.09.22 12.15.38 undwad
+** example.cpp 2013.09.22 17.02.02 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -208,10 +208,15 @@ int main(int argc, char* argv[])
 	//shows how call std::function from lua and create lua metatables
 	{
 		auto func = [](int a, int b) { return (float)a / b; }; //define callback anon function
-		auto callback = MAKECALLBACK(&*L, func); //callback holds std::function<float(int, int)>
-		callback.setGlobal("div"); //sets callback as global function
+		auto callback1 = MAKECALLBACK(&*L, func); //callback holds std::function<float(int, int)>
+		callback1.setGlobal("div"); //sets callback as global function
 		ScriptText(&*L, "print(div(1, 2))")(); //test it
 
+		auto proc = [](string s) { cout << s << endl; }; //define callback anon procedure
+		auto callback2 = MAKECALLBACK(&*L, proc); //callback holds std::function<void(string)>
+		callback2.setGlobal("proc"); //sets callback as global function
+		ScriptText(&*L, "print(proc('some text', 'excess param'))")(); //test it
+		
 		ScriptText(&*L, "print(table.someparam)")(); //print our table's absent parameter
 
 		Table table(&*L);
@@ -241,13 +246,71 @@ int main(int argc, char* argv[])
 		SAVESTACK
 	}
 
+
+	////EXAMPLE 5!
+	//{
+	//	auto func = []() { return "joder"; };
+	//	auto callback = MAKECALLBACK(&*L, func);
+	//	callback.setGlobal("test");
+	//	ScriptText(&*L, "print(test(111, 222))")();
+
+	//	SAVESTACK
+	//}
+
+
+	////EXAMPLE 4
+	////shows how to bind c++ classes to lua
+	//{
+	//	struct Object
+	//	{
+	//		string str;
+
+	//		Object(const string& s) : str(s) { }
+
+	//		string getString() { return str; }
+	//		
+	//		void setString(const string& s) { str = s; }
+	//	};
+
+	//	
+	//	auto constructor = MAKECALLBACK(&*L, [L](string s)
+	//	{
+	//		cout << "constructor" << endl;
+	//		auto o = new Object(s);
+	//		cout << (void*)o << endl;
+	//		auto destructor = MAKECALLBACK(&*L, [o](void* ptr)
+	//		{
+	//			cout << "desrtuctor" << endl;
+	//			delete o;
+	//			return 0;
+	//		});
+	//		//Table mt(&*L);
+	//		//mt.createNew();
+	//		//mt.set("__gc", destructor);
+	//		
+	//		Table t(&*L);
+	//		t.createNew();
+	//		return t;
+	//	});
+	//	constructor.setGlobal("Object");
+
+	//	if (ScriptText(&*L, R"LUA(
+	//		f = function()
+	//			print(Object)
+	//			o = Object('some text')
+	//			print(o)
+	//			print('exit')
+	//		end
+	//		print(pcall(f))
+	//	)LUA")())
+	//	{
+	//	}
+
+	//	SAVESTACK
+	//}
+
 	return 0;
 }
 
-/*
-TODO
-1. c++ to lua class binding like in luabind or slb
-*/
 
-#	if GCC_VERSION >= 30700
-#	endif
+
