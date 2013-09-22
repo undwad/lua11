@@ -1,5 +1,5 @@
 /*
-** example.cpp 2013.09.20 12.01.32 undwad
+** example.cpp 2013.09.22 12.15.38 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -208,7 +208,7 @@ int main(int argc, char* argv[])
 	//shows how call std::function from lua and create lua metatables
 	{
 		auto func = [](int a, int b) { return (float)a / b; }; //define callback anon function
-		auto callback = CallbackFactory::make(&*L, misc::make_function(func)); //callback holds std::function<float(int, int)>
+		auto callback = MAKECALLBACK(&*L, func); //callback holds std::function<float(int, int)>
 		callback.setGlobal("div"); //sets callback as global function
 		ScriptText(&*L, "print(div(1, 2))")(); //test it
 
@@ -222,7 +222,7 @@ int main(int argc, char* argv[])
 				print(table.error); //print error because table yet does not have metatable
 
 			metatable.createNew(); //create metatable
-			Callback<string, Table, string> __index(&*L, [](Table table, string key) //define callback __index metamethod
+			auto __index = MAKECALLBACK(&*L, [](Table table, string key) //define callback __index metamethod
 			{
 				string value;
 				return string(key) + "_" + (table.rawget(key, &value) ? value : "nil"); //return key_value string
@@ -247,7 +247,6 @@ int main(int argc, char* argv[])
 /*
 TODO
 1. c++ to lua class binding like in luabind or slb
-2. automatic deduce callback result and parameters type (not very sure if it is possible)
 */
 
 #	if GCC_VERSION >= 30700
