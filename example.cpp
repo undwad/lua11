@@ -208,11 +208,7 @@ int main(int argc, char* argv[])
 	//shows how call std::function from lua and create lua metatables
 	{
 		auto func = [](int a, int b) { return (float)a / b; }; //define callback anon function
-#	if GCC_VERSION >= 30700
 		auto callback = CallbackFactory::make(&*L, misc::make_function(func)); //callback holds std::function<float(int, int)>
-#	else
-		Callback<float, int, int> callback(&*L, func); //callback holds std::function<float(int, int)>
-#	endif
 		callback.setGlobal("div"); //sets callback as global function
 		ScriptText(&*L, "print(div(1, 2))")(); //test it
 

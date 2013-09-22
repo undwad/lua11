@@ -1,8 +1,6 @@
 #ifndef _STD_MISC_H__
 #define _STD_MISC_H__
 
-#define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-
 namespace std
 {
 	class misc
@@ -46,22 +44,34 @@ namespace std
 			return forwardref_impl(Indices(), tuple, func);
 		}
 
-#	if GCC_VERSION >= 30700
+//		template<typename T> struct remove_class { };
+//		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...)> { using type = R(A...); };
+//		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) const> { using type = R(A...); };
+//		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) volatile> { using type = R(A...); };
+//		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) const volatile> { using type = R(A...); };
+
+//		template<typename T> struct get_signature_impl { using type = typename remove_class<decltype(&std::remove_reference<T>::type::operator())>::type; };
+//		template<typename R, typename ...A> struct get_signature_impl<R(A...)> { using type = R(A...); };
+//		template<typename R, typename ...A> struct get_signature_impl<R(&)(A...)> { using type = R(A...); };
+//		template<typename R, typename ...A> struct get_signature_impl<R(*)(A...)> { using type = R(A...); };
+//		template<typename T> using get_signature = typename get_signature_impl<T>::type;
+
+//		template<typename F> using make_function_type = std::function<get_signature<F>>;
+//		template<typename F> static make_function_type<F> make_function(F &&f) { return make_function_type<F>(std::forward<F>(f)); }
+
 		template<typename T> struct remove_class { };
-		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...)> { using type = R(A...); };
-		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) const> { using type = R(A...); };
-		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) volatile> { using type = R(A...); };
-		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) const volatile> { using type = R(A...); };
+		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...)> { typedef R(type)(A...); };
+		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) const> { typedef R(type)(A...); };
+		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) volatile> { typedef R(type)(A...); };
+		template<typename C, typename R, typename ...A> struct remove_class<R(C::*)(A...) const volatile> { typedef R(type)(A...); };
 
-		template<typename T> struct get_signature_impl { using type = typename remove_class<decltype(&std::remove_reference<T>::type::operator())>::type; };
-		template<typename R, typename ...A> struct get_signature_impl<R(A...)> { using type = R(A...); };
-		template<typename R, typename ...A> struct get_signature_impl<R(&)(A...)> { using type = R(A...); };
-		template<typename R, typename ...A> struct get_signature_impl<R(*)(A...)> { using type = R(A...); };
-		template<typename T> using get_signature = typename get_signature_impl<T>::type;
+		template<typename T> struct get_signature_impl : remove_class<decltype(&std::remove_reference<T>::type::operator())> { };
+		template<typename R, typename ...A> struct get_signature_impl<R(A...)> { typedef R(type)(A...); };
+		template<typename R, typename ...A> struct get_signature_impl<R(&)(A...)> { typedef R(type)(A...); };
+		template<typename R, typename ...A> struct get_signature_impl<R(*)(A...)> { typedef R(type)(A...); };
+		template<typename T> struct get_signature : get_signature_impl<T> { };
 
-		template<typename F> using make_function_type = std::function<get_signature<F>>;
-		template<typename F> static make_function_type<F> make_function(F &&f) { return make_function_type<F>(std::forward<F>(f)); }
-#	endif
+		template<typename F> static function<typename get_signature_impl<F>::type> make_function(F &&f) { return function<typename get_signature_impl<F>::type>(std::forward<F>(f)); }
 
 	private:
 		template<unsigned...> struct index_tuple { };
