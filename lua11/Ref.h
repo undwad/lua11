@@ -1,5 +1,5 @@
 /*
-** Ref.h 2013.09.19 10.47.38 undwad
+** Ref.h 2013.09.23 09.16.42 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h 
@@ -99,6 +99,15 @@ namespace lua11
 		TableRef(lua_State* l) : RegistryRef(l) { }
 		TableRef(const TableRef& r) : RegistryRef(r) { }
 		virtual ~TableRef() { }
+	};
+
+	class ValueRef : public RegistryRef
+	{
+	public:
+		ValueRef() { }
+		ValueRef(lua_State* l) : RegistryRef(l) { }
+		ValueRef(const ValueRef& r) : RegistryRef(r) { }
+		virtual ~ValueRef() { }
 	};
 
 	class CallbackRef : public Ref

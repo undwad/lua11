@@ -1,5 +1,5 @@
 /*
-** Function.h 2013.09.20 10.28.24 undwad
+** Function.h 2013.09.23 09.16.42 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -22,7 +22,7 @@ namespace lua11
 		bool getGlobal(const string& name)
 		{
 			lua_getglobal(L, name.c_str());
-			if(lua_isfunction(L, -1))
+			if(Stack::is(L, this))
 				return FunctionRef::pop(L);
 			lua_pop(L, 1);
 			error = string(name) + " is not function";
@@ -98,8 +98,9 @@ namespace lua11
 		PARAM(const string&)
 		PARAM(const FunctionRef&)
 		PARAM(const TableRef&)
-		PARAM(const CallbackRef&)
+		PARAM(const ValueRef&)
 		PARAM(const NilRef&)
+		PARAM(const CallbackRef&)
 
 #		undef PARAM
 
@@ -141,8 +142,9 @@ namespace lua11
 		PARAM(string)
 		PARAM(FunctionRef)
 		PARAM(TableRef)
-		PARAM(CallbackRef)
+		PARAM(ValueRef)
 		PARAM(NilRef)
+		PARAM(CallbackRef)
 
 #		undef PARAM
 	};

@@ -1,5 +1,5 @@
 /*
-** Stack.h 2013.09.20 10.28.24 undwad
+** Stack.h 2013.09.23 09.16.42 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -64,8 +64,9 @@ namespace lua11
 		void push(lua_State* L, const string& p) { lua_pushlstring(L, p.c_str(), p.size()); }
 		void push(lua_State* L, const FunctionRef& p) { p.push(L); }
 		void push(lua_State* L, const TableRef& p) { p.push(L); }
-		void push(lua_State* L, const CallbackRef& p) { p.push(L); }
+		void push(lua_State* L, const ValueRef& p) { p.push(L); }
 		void push(lua_State* L, const NilRef& p) { p.push(L); }
+		void push(lua_State* L, const CallbackRef& p) { p.push(L); }
 
 		bool is(lua_State* L, bool* p, int i = -1) { return lua_isboolean(L, i); }
 		bool is(lua_State* L, unsigned char* p, int i = -1) { return lua_isnumber(L, i); }
@@ -84,8 +85,9 @@ namespace lua11
 		bool is(lua_State* L, string* p, int i = -1) { return lua_isstring(L, i); }
 		bool is(lua_State* L, FunctionRef* p, int i = -1) { return lua_isfunction(L, i); }
 		bool is(lua_State* L, TableRef* p, int i = -1) { return lua_istable(L, i); }
-		bool is(lua_State* L, CallbackRef* p, int i = -1) { return lua_iscfunction(L, i); }
+		bool is(lua_State* L, ValueRef* p, int i = -1) { return !lua_isnil(L, i); }
 		bool is(lua_State* L, NilRef* p, int i = -1) { return lua_isnil(L, i); }
+		bool is(lua_State* L, CallbackRef* p, int i = -1) { return lua_iscfunction(L, i); }
 
 		void get(lua_State* L, bool* p, int i = -1) { *p = lua_toboolean(L, i); }
 		void get(lua_State* L, unsigned char* p, int i = -1) { *p = lua_tounsigned(L, i); }
@@ -104,8 +106,9 @@ namespace lua11
 		void get(lua_State* L, string* p, int i = -1) { size_t len; lua_tolstring(L, i, &len); *p = string(lua_tolstring(L, i, nullptr), len); }
 		void get(lua_State* L, FunctionRef* p, int i = -1) { p->Ref::pop(L, i); }
 		void get(lua_State* L, TableRef* p, int i = -1) { p->Ref::pop(L, i); }
-		void get(lua_State* L, CallbackRef* p, int i = -1) { p->Ref::pop(L, i); }
+		void get(lua_State* L, ValueRef* p, int i = -1) { p->Ref::pop(L, i); }
 		void get(lua_State* L, NilRef* p, int i = -1) { p->Ref::pop(L, i); }
+		void get(lua_State* L, CallbackRef* p, int i = -1) { p->Ref::pop(L, i); }
 
 #		define POP(T) void pop(lua_State* L, T* p, int i = -1) { get(L, p, i); lua_remove(L, i); }
 
@@ -126,8 +129,9 @@ namespace lua11
 		POP(string)
 		POP(FunctionRef)
 		POP(TableRef)
-		POP(CallbackRef)
+		POP(ValueRef)
 		POP(NilRef)
+		POP(CallbackRef)
 
 #		undef POP
 

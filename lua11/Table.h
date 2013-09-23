@@ -1,5 +1,5 @@
 /* 
-**	Table.h 2013.09.20 10.48.42 undwad
+**	Table.h 2013.09.23 09.16.42 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -22,7 +22,7 @@ namespace lua11
 		bool getGlobal(const string& name)
 		{
 			lua_getglobal(L, name.c_str());
-			if(lua_istable(L, -1))
+			if(Stack::is(L, this))
 				return TableRef::pop(L);
 			error = string(name) + " is not table";
 			return false;
@@ -211,8 +211,9 @@ namespace lua11
 		SET(const string&)
 		SET(const FunctionRef&)
 		SET(const TableRef&)
-		SET(const CallbackRef&)
+		SET(const ValueRef&)
 		SET(const NilRef&)
+		SET(const CallbackRef&)
 
 #		undef SET
 #		undef _SET
@@ -263,8 +264,9 @@ namespace lua11
 		GET(string)
 		GET(FunctionRef)
 		GET(TableRef)
-		GET(CallbackRef)
+		GET(ValueRef)
 		GET(NilRef)
+		GET(CallbackRef)
 
 #		undef GET
 #		undef _GET
