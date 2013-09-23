@@ -279,13 +279,18 @@ int main(int argc, char* argv[])
 	{
 		struct Test
 		{
-			string str;
-			Test(string s) : str(s) { cout << "ctor " << str << endl; }
-			void print(string s) { cout << "print " << str << endl; }
+			Test() { cout << "ctor " << endl; }
+			void print(string s) { cout << "print " << s << endl; }
 		};
 		
 		Table table(&*L);
 		table.createNew();
+		auto init = MAKECALLBACK(&*L, [L](Table table)
+		{
+			auto obj = new Test();
+			table.set("__instance", (void*)obj);
+		});
+		table.set("init", init);
 		auto print = MAKECALLBACK(&*L, [L](Table table, string s)
 		{
 			Test* test;
@@ -295,33 +300,20 @@ int main(int argc, char* argv[])
 			}
 		});
 		table.set("print", print);
-
-		Table metatable(&*L);
-		metatable.createNew();
-		auto __call = MAKECALLBACK(&*L, [L](Table table, string s)
-		{
-			table.createNew();
-			auto test = new Test(s);
-			table.set("__instance", (void*)test);
-			return table;
-		});
-		metatable.set("__call", __call);
-		
-		table.setMeta(metatable);
 		table.setGlobal("Test");
-
 
 		ScriptText s(&*L, R"LUA(
 			print('JODER')
-			print(Test)
-			print(Test.print)
-			print(getmetatable(Test))
-			print(getmetatable(Test).__call)
-			
-			t = Test(123)
+			require 'class'
+			Test = class(Test)
+			function Test:print2(s)
+				print('print2', s)
+			end
+			t = Test()
 			print(t)
-			--print(t.print)
-			--t.print(321)
+			t:print2(123)
+			print(t.__instance)
+			t:print(123)
 		)LUA");
 		s();
 		cout << s.error << endl;
