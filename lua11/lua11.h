@@ -42,6 +42,7 @@ extern "C"
 #include "Function.h"
 #include "Table.h"
 #include "Callback.h"
+#include "Object.h"
 
 #pragma warning(default : 4800)
 #pragma warning(default : 4244)

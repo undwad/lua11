@@ -1,5 +1,5 @@
 /*
-** Callback.h 2013.09.22 18.30.28 undwad
+** Callback.h 2013.09.23 14.38.15 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -103,6 +103,7 @@ namespace lua11
 	};
 
 #	define MAKECALLBACK(l, f) CallbackFactory::make(l, misc::make_function(f))
+
 }
 
 #endif // _LUA11_CALLBACK_H__

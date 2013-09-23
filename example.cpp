@@ -280,30 +280,51 @@ int main(int argc, char* argv[])
 		struct Test
 		{
 			string str;
-			Test(string s) : str(s) { cout << str << endl; }
-			void print(string s) { cout << str << endl; }
+			Test(string s) : str(s) { cout << "ctor " << str << endl; }
+			void print(string s) { cout << "print " << str << endl; }
 		};
 		
-		auto ctorTest = MAKECALLBACK(&*L, [L](string s) 
+		Table table(&*L);
+		table.createNew();
+		auto print = MAKECALLBACK(&*L, [L](Table table, string s)
 		{
-			auto o = new Test(s);
-			Table t(&*L);
-			auto print = MAKECALLBACK(&*L, [o](string s) 
-			{ 
-				o->print(s); 
-			});
-			t.set("print", print);
-			return t;
+			Test* test;
+			if (table.get("__instance", (void**)&test))
+			{
+				test->print(s);
+			}
 		});
-		ctorTest.setGlobal("Test");
+		table.set("print", print);
 
-		ScriptText(&*L, R"LUA(
+		Table metatable(&*L);
+		metatable.createNew();
+		auto __call = MAKECALLBACK(&*L, [L](Table table, string s)
+		{
+			table.createNew();
+			auto test = new Test(s);
+			table.set("__instance", (void*)test);
+			return table;
+		});
+		metatable.set("__call", __call);
+		
+		table.setMeta(metatable);
+		table.setGlobal("Test");
+
+
+		ScriptText s(&*L, R"LUA(
+			print('JODER')
 			print(Test)
+			print(Test.print)
+			print(getmetatable(Test))
+			print(getmetatable(Test).__call)
+			
 			t = Test(123)
 			print(t)
-			print(t.print)
-			t.print(321)
-		)LUA")();
+			--print(t.print)
+			--t.print(321)
+		)LUA");
+		s();
+		cout << s.error << endl;
 
 
 		SAVESTACK
