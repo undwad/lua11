@@ -254,7 +254,6 @@ int main(int argc, char* argv[])
 						table.anotherparam = function() end
 						print(table.anotherparam)	
 					)LUA")();
-					ScriptText(&*L, "")(); //once again print our table's absent parameter
 				}
 			}
 
@@ -275,6 +274,40 @@ int main(int argc, char* argv[])
 
 	//	SAVESTACK
 	//}
+
+	//EXAMPLE 5!
+	{
+		struct Test
+		{
+			string str;
+			Test(string s) : str(s) { cout << str << endl; }
+			void print(string s) { cout << str << endl; }
+		};
+		
+		auto ctorTest = MAKECALLBACK(&*L, [L](string s) 
+		{
+			auto o = new Test(s);
+			Table t(&*L);
+			auto print = MAKECALLBACK(&*L, [o](string s) 
+			{ 
+				o->print(s); 
+			});
+			t.set("print", print);
+			return t;
+		});
+		ctorTest.setGlobal("Test");
+
+		ScriptText(&*L, R"LUA(
+			print(Test)
+			t = Test(123)
+			print(t)
+			print(t.print)
+			t.print(321)
+		)LUA")();
+
+
+		SAVESTACK
+	}
 
 
 	return 0;

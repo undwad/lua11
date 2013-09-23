@@ -1,5 +1,5 @@
 /*
-** Ref.h 2013.09.23 09.16.42 undwad
+** Ref.h 2013.09.23 12.36.06 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h 
@@ -44,26 +44,29 @@ namespace lua11
 		friend class Stack;
 
 	public:
-		RegistryRef() : index(0), copy(false) { }
-		RegistryRef(lua_State* l) : Ref(l), index(0), copy(false) { }
-		RegistryRef(const RegistryRef& r) : Ref(r), index(r.index), copy(true) { }
+		RegistryRef() : index(LUA_NOREF) { }
+		RegistryRef(lua_State* l) : Ref(l), index(LUA_NOREF) { }
+		RegistryRef(const RegistryRef& r) : Ref(r), index(LUA_NOREF)
+		{ 
+			if(r.push(L))
+				pop(L); 
+		}
 		virtual ~RegistryRef() { free(); }
 
-		operator bool() { return index; }
-		bool operator !() { return !index; }
+		operator bool() { return LUA_NOREF != index; }
+		bool operator !() { return LUA_NOREF == index; }
 
 	protected:
 		virtual bool pop(lua_State* L) 
 		{ 
 			free();
 			index = luaL_ref(L, LUA_REGISTRYINDEX);
-			copy = false;
-			return index;
+			return LUA_NOREF != index;
 		}
 
 		virtual bool push(lua_State* L) const
 		{
-			if(index)
+			if (LUA_NOREF != index)
 			{
 				lua_rawgeti(L, LUA_REGISTRYINDEX, index);
 				return true;
@@ -73,13 +76,12 @@ namespace lua11
 
 	private:
 		int index;
-		bool copy;
 
 		void free()
 		{
-			if(index && !copy)
+			if (LUA_NOREF != index)
 				luaL_unref(L, LUA_REGISTRYINDEX, index);
-			index = 0;
+			index = LUA_NOREF;
 		}
 	};
 
