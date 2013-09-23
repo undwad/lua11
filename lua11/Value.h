@@ -17,7 +17,74 @@ namespace lua11
 		virtual ~Nil() { }
 	};
 
-	//class Value : public ValueRef, protected Stack
+	class Value : public ValueRef, protected Stack
+	{
+	public:
+		Value() { }
+		Value(lua_State* l) : ValueRef(l) {}
+		Value(lua_State* l, const string& name) : ValueRef(l) { getGlobal(name); }
+		Value(const Value& v) : ValueRef(v) { }
+		virtual ~Value() { }
+
+		bool getGlobal(const string& name)
+		{
+			lua_getglobal(L, name.c_str());
+			if (Stack::is(L, this))
+				return ValueRef::pop(L);
+			error = string(name) + " is not value";
+			return false;
+		}
+
+		bool setGlobal(const string& name)
+		{
+			if (ValueRef::push(L))
+			{
+				lua_setglobal(L, name.c_str());
+				return true;
+			}
+			return false;
+		}
+
+		template <typename T> bool set(T v)
+		{
+			Stack::push(L, v);
+			return ValueRef::pop(L);
+		}
+
+		template <typename T> void operator =(T v) { set(v); }
+
+		template <typename T> bool get(T* v)
+		{
+			bool result = false;
+			if (ValueRef::push(L))
+			{
+				if (Stack::is(L, v))
+				{
+					Stack::pop(L, v);
+					result = true;
+				}
+				lua_pop(L, 1);
+			}
+			return result;
+		}
+
+		template <typename T> operator T() { T v;  get(&v); return v; }
+
+		int type()
+		{
+			int result = LUA_TNONE;
+			if (ValueRef::push(L))
+			{
+				result = lua_type(L, -1);
+				lua_pop(L, 1);
+			}
+			return result;
+		}
+
+		string typeName() { return lua_typename(L, type()); }
+	};
+
+	//class Value : protected Stack
 	//{
 	//public:
 	//	string error;
@@ -26,31 +93,6 @@ namespace lua11
 	//	Value(lua_State* l) : L(l) {}
 	//	Value(lua_State* l, const string& n) : L(l), name(n) {}
 	//	virtual ~Value() { }
-
-	//	bool getGlobal(const string& name)
-	//	{
-	//		lua_getglobal(L, name.c_str());
-	//		if (lua_istable(L, -1))
-	//			return TableRef::pop(L);
-	//		error = string(name) + " is not table";
-	//		return false;
-	//	}
-
-	//	bool createNew()
-	//	{
-	//		lua_newtable(L);
-	//		return TableRef::pop(L);
-	//	}
-
-	//	bool setGlobal(const string& name)
-	//	{
-	//		if (TableRef::push(L))
-	//		{
-	//			lua_setglobal(L, name.c_str());
-	//			return true;
-	//		}
-	//		return false;
-	//	}
 
 	//	template <typename T> void set(T v)
 	//	{
@@ -82,8 +124,8 @@ namespace lua11
 	//	{
 	//		lua_getglobal(L, name.c_str());
 	//		int result = lua_type(L, -1);
-	//		lua_pop(L, 1);
-	//		return result;
+	//		lua_pop(L, 1); 
+	//		return result; 
 	//	}
 
 	//	string typeName() { return lua_typename(L, type()); }
@@ -91,56 +133,6 @@ namespace lua11
 	//protected:
 	//	mutable lua_State* L;
 	//};
-
-	class Value : protected Stack
-	{
-	public:
-		string error;
-		string name;
-
-		Value(lua_State* l) : L(l) {}
-		Value(lua_State* l, const string& n) : L(l), name(n) {}
-		virtual ~Value() { }
-
-		template <typename T> void set(T v)
-		{
-			Stack::push(L, v);
-			lua_setglobal(L, name.c_str());
-		}
-
-		template <typename T> void operator =(T v) { set(v); }
-
-		template <typename T> void set(const string& n, T v) { name = n; set(v); }
-
-		template <typename T> bool get(T* v)
-		{
-			lua_getglobal(L, name.c_str());
-			if (Stack::is(L, v))
-			{
-				Stack::pop(L, v);
-				return true;
-			}
-			lua_pop(L, 1);
-			return false;
-		}
-
-		template <typename T> operator T() { T v;  get(&v); return v; }
-
-		template <typename T> bool get(const string& n, T* v) { name = n; return get(v); }
-
-		int type()
-		{
-			lua_getglobal(L, name.c_str());
-			int result = lua_type(L, -1);
-			lua_pop(L, 1); 
-			return result; 
-		}
-
-		string typeName() { return lua_typename(L, type()); }
-
-	protected:
-		mutable lua_State* L;
-	};
 }
 
 #endif // _LUA11_VALUE_H__

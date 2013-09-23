@@ -85,7 +85,7 @@ namespace lua11
 		bool is(lua_State* L, string* p, int i = -1) { return lua_isstring(L, i); }
 		bool is(lua_State* L, FunctionRef* p, int i = -1) { return lua_isfunction(L, i); }
 		bool is(lua_State* L, TableRef* p, int i = -1) { return lua_istable(L, i); }
-		bool is(lua_State* L, ValueRef* p, int i = -1) { return !lua_isnil(L, i); }
+		bool is(lua_State* L, ValueRef* p, int i = -1) { return true; }
 		bool is(lua_State* L, NilRef* p, int i = -1) { return lua_isnil(L, i); }
 		bool is(lua_State* L, CallbackRef* p, int i = -1) { return lua_iscfunction(L, i); }
 

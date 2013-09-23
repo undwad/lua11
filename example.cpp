@@ -185,17 +185,20 @@ int main(int argc, char* argv[])
 					}
 			}
 
-		Value value(&*L, "value1"); //global value
-		value = 123; //set global value value
+		Value value(&*L); //new value
+		value = 123; //set value's value
+		value.setGlobal("value1"); //save value to global table
 		ScriptText(&*L, "print(value1)")(); //print it
-		value.name = "value2"; //set global value name
-		value = true; //set global value
+		value = true; //set value's value
+		value.setGlobal("value2"); //save value to global table
 		ScriptText(&*L, "print(value2)")(); //print it
 		print((bool)value); //print it
-		value.set("value3", "some text"); //set global value name and value
+		value.set("some text"); //set value's value
+		value.setGlobal("value3"); //save value to global table
 		ScriptText(&*L, "print(value3)")(); //print it
 		print(value.type(), value.typeName()); //print value type and name
 		ScriptText(&*L, "value3 = 123.321")(); //change it
+		value.getGlobal("value3"); //get value from global table
 		double v;
 		if (value.get(&v)) //get it
 			print(v); //print it
@@ -233,10 +236,26 @@ int main(int argc, char* argv[])
 				return string(key) + "_" + (table.rawget(key, &value) ? value : "nil"); //return key_value string
 			});
 
-			if (metatable.set("__index", __index)) //set metatable's __index function
+			auto __newindex = MAKECALLBACK(&*L, [](Table table, string key, Value value) //define callback __newindex metamethod
+			{
+				table.rawset(key, value); //raw set table value at given key
+			});
+
+			if (metatable.set("__index", __index) && metatable.set("__newindex", __newindex)) //set metatable's __index and __newindex functions
 			{
 				if (table.setMeta(metatable)) //set table's metatable
-					ScriptText(&*L, "print(table.someparam)")(); //once again print our table's absent parameter
+				{
+					//and test metamethods
+					ScriptText(&*L, R"LUA(
+						print(table.someparam)
+						table.someparam = 0123456789
+						print(table.someparam)
+						print(table.anotherparam)	
+						table.anotherparam = function() end
+						print(table.anotherparam)	
+					)LUA")();
+					ScriptText(&*L, "")(); //once again print our table's absent parameter
+				}
 			}
 
 			if (table.getMeta(&metatable)) //get metatable
