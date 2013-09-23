@@ -83,56 +83,6 @@ namespace lua11
 
 		string typeName() { return lua_typename(L, type()); }
 	};
-
-	//class Value : protected Stack
-	//{
-	//public:
-	//	string error;
-	//	string name;
-
-	//	Value(lua_State* l) : L(l) {}
-	//	Value(lua_State* l, const string& n) : L(l), name(n) {}
-	//	virtual ~Value() { }
-
-	//	template <typename T> void set(T v)
-	//	{
-	//		Stack::push(L, v);
-	//		lua_setglobal(L, name.c_str());
-	//	}
-
-	//	template <typename T> void operator =(T v) { set(v); }
-
-	//	template <typename T> void set(const string& n, T v) { name = n; set(v); }
-
-	//	template <typename T> bool get(T* v)
-	//	{
-	//		lua_getglobal(L, name.c_str());
-	//		if (Stack::is(L, v))
-	//		{
-	//			Stack::pop(L, v);
-	//			return true;
-	//		}
-	//		lua_pop(L, 1);
-	//		return false;
-	//	}
-
-	//	template <typename T> operator T() { T v;  get(&v); return v; }
-
-	//	template <typename T> bool get(const string& n, T* v) { name = n; return get(v); }
-
-	//	int type()
-	//	{
-	//		lua_getglobal(L, name.c_str());
-	//		int result = lua_type(L, -1);
-	//		lua_pop(L, 1); 
-	//		return result; 
-	//	}
-
-	//	string typeName() { return lua_typename(L, type()); }
-
-	//protected:
-	//	mutable lua_State* L;
-	//};
 }
 
 #endif // _LUA11_VALUE_H__
