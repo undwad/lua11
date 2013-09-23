@@ -277,57 +277,6 @@ int main(int argc, char* argv[])
 	//}
 
 
-	////EXAMPLE 4
-	////shows how to bind c++ classes to lua
-	//{
-	//	struct Object
-	//	{
-	//		string str;
-
-	//		Object(const string& s) : str(s) { }
-
-	//		string getString() { return str; }
-	//		
-	//		void setString(const string& s) { str = s; }
-	//	};
-
-	//	
-	//	auto constructor = MAKECALLBACK(&*L, [L](string s)
-	//	{
-	//		cout << "constructor" << endl;
-	//		auto o = new Object(s);
-	//		cout << (void*)o << endl;
-	//		auto destructor = MAKECALLBACK(&*L, [o](void* ptr)
-	//		{
-	//			cout << "desrtuctor" << endl;
-	//			delete o;
-	//			return 0;
-	//		});
-	//		//Table mt(&*L);
-	//		//mt.createNew();
-	//		//mt.set("__gc", destructor);
-	//		
-	//		Table t(&*L);
-	//		t.createNew();
-	//		return t;
-	//	});
-	//	constructor.setGlobal("Object");
-
-	//	if (ScriptText(&*L, R"LUA(
-	//		f = function()
-	//			print(Object)
-	//			o = Object('some text')
-	//			print(o)
-	//			print('exit')
-	//		end
-	//		print(pcall(f))
-	//	)LUA")())
-	//	{
-	//	}
-
-	//	SAVESTACK
-	//}
-
 	return 0;
 }
 
