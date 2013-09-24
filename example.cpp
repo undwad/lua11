@@ -332,14 +332,19 @@ int main(int argc, char* argv[])
 		struct Test
 		{
 			Test() { cout << "Test()" << endl; }
+			Test(string s) { cout << "Test(" << s << ")" << endl; }
 			~Test() { cout << "~Test()" << endl; }
 			void print(string s) { cout << "print " << s << endl; }
 		};
 
-		Class<Test>(&*L).init();
+		Class<Test>(&*L, "Test").init();
 
 		ScriptText s(&*L, R"LUA(
 			print('JODER')
+			print(Test)
+			print(Test.init)
+			print(Test.__gc)
+			Test.init({})
 			require 'class'
 			Test = class(Test)
 			--function Test:init()

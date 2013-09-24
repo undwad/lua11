@@ -13,9 +13,9 @@ namespace lua11
 	template <class T> class Class
 	{
 	public:
-		Class(lua_State* l) : L(l), table(L)
+		Class(lua_State* l, const string& name) : L(l), table(L)
 		{ 
-			if (table.createNew() && table.setGlobal(typeid(T).name()))
+			if (table.createNew() && table.setGlobal(name))
 			{
 				auto gc = new Callback<void, Table>(L, [this](Table t) 
 				{ 
@@ -24,7 +24,7 @@ namespace lua11
 						delete obj;
 				});
 				callbacks.push_back(shared_ptr<CallbackRef>(gc));
-				table.set("__gc", gc);
+				table.set("__gc", *gc);
 			}
 		}
 		virtual ~Class() { }
@@ -45,12 +45,12 @@ namespace lua11
 				};
 				auto init = new Callback<void, Table, P...>(L, lambda);
 				callbacks.push_back(shared_ptr<CallbackRef>(init));
-				table.set(name, init);
+				table.set(name, *init);
 			}
 			return *this;
 		}
 
-		template <typename ...P> Class& init() { return init<P...>("name"); }
+		template <typename ...P> Class& init() { return init<P...>("init"); }
 
 	private:
 		lua_State* L;
