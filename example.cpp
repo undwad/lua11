@@ -1,5 +1,5 @@
 /*
-** example.cpp 2013.09.24 14.29.57 undwad
+** example.cpp 2013.09.24 15.42.22 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -264,109 +264,41 @@ int main(int argc, char* argv[])
 		SAVESTACK
 	}
 
-
-	////EXAMPLE 5!
-	//{
-	//	auto func = []() { return "joder"; };
-	//	auto callback = MAKECALLBACK(&*L, func);
-	//	callback.setGlobal("test");
-	//	ScriptText(&*L, "print(test(111, 222))")();
-
-	//	SAVESTACK
-	//}
-
-	////EXAMPLE 5!
-	//{
-	//	struct Test
-	//	{
-	//		Test() { cout << "ctor " << endl; }
-	//		void print(string s) { cout << "print " << s << endl; }
-	//	};
-	//	
-	//	Table table(&*L);
-	//	table.createNew();
-	//	auto init = MAKECALLBACK(&*L, [L](Table table)
-	//	{
-	//		auto obj = new Test();
-	//		table.set("__instance", (void*)obj);
-	//	});
-	//	table.set("init", init);
-	//	auto print = MAKECALLBACK(&*L, [L](Table table, string s)
-	//	{
-	//		Test* test;
-	//		if (table.get("__instance", (void**)&test))
-	//		{
-	//			test->print(s);
-	//		}
-	//	});
-	//	table.set("print", print);
-	//	table.setGlobal("Test");
-
-	//	ScriptText s(&*L, R"LUA(
-	//		print('JODER')
-	//		require 'class'
-	//		Test = class(Test)
-	//		function Test:init()
-	//			Test.base.init(self)
-	//			self.a = 'A'
-	//		end
-	//		function Test:print2(s)
-	//			print('print2', s)
-	//		end
-	//		t = Test()
-	//		print(t)
-	//		t:print2(123)
-	//		print(t.__instance)
-	//		t:print(123)
-	//		print(t.a)
-	//	)LUA");
-	//	s();
-	//	cout << s.error << endl;
-
-
-	//	SAVESTACK
-	//}
-
-	//EXAMPLE 5!
+	//EXAMPLE 5
+	//shows how to bind C++ classes to lua
 	{
-		struct Test
+		struct Test //test class
 		{
-			Test() { cout << "Test()" << endl; }
+			Test() { cout << "Test()" << endl; } 
 			Test(string s) { cout << "Test(" << s << ")" << endl; }
 			~Test() { cout << "~Test()" << endl; }
-			void print(string s) { cout << "print " << s << endl; }
+			void print(string s) { cout << "print " << s << endl; } //test function
 		};
 
-		Class<Test> test(&*L, "Test");
-		test.init();
-		test.set("print", &Test::print);
+		Class<Test> test(&*L, "Test"); //define lua class in C++
+		test.init(); //define constructor "init"
+		test.init<string>("inits"); //define alternative constructor "inits"
+		test.set("print", &Test::print); //define function
+
 		{
 			ScriptText s(&*L, R"LUA(
-			--debug.sethook(print, "l")
-			print('JODER')
-			print('Test', Test)
-			print('Test.init', Test.init)
-			print('Test.__gc', Test.__gc)
-			Test.__gc({})
-			require 'class'
-			Test = class(Test)
-			--function Test:init()
-			--	Test.base.init(self)
-			--	self.a = 'A'
-			--end
-			function Test:__gc()
-				print('__gc', Test.base.__gc, self)
-				Test.base.__gc(self)
+			require 'class' --import class module
+			Test = class(Test) --define class Test descendant of defined in C++ Test
+			function Test:init() --constructor of new Test class
+				Test.base.init(self) --call base constrcuctor
+				self.a = 'A' --initialize field
 			end
-			function Test:print2(s)
+			function Test:__gc() --define destructor
+				Test.base.__gc(self) --callbase destructor
+			end
+			function Test:print2(s) --define function
 				print('print2', s)
 			end
-			t = Test()
-			print('t', t)
-			t:print2(123)
-			print('t.instance', t.instance)
-			t:print(123)
-			--print(t.a)
+			t = Test() --create instance
+			print(t, t.instance) --print it
+			t:print2(123) --test lua function
+			t:print(123) --test c++ function
+			print(t.a) --print field
 		)LUA");
 			s();
 			cout << s.error << endl;
@@ -374,6 +306,8 @@ int main(int argc, char* argv[])
 
 		SAVESTACK
 	}
+
+	cout << "EXIT" << endl;
 
 	return 0;
 }

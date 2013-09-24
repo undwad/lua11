@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.24 14.29.57 undwad
+** Class.h 2013.09.24 15.31.19 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -15,11 +15,11 @@ namespace lua11
 	public:
 		Class(lua_State* l, const string& name) : L(l), table(L)
 		{ 
+			callbacks = new vector<shared_ptr<CallbackRef>>();
 			if (table.createNew() && table.setGlobal(name))
 			{
 				auto callback = NEWCALLBACK(L, [](Table t)
 				{
-					cout << "__GC__" << endl;
 					T* obj;
 					if (t.get("instance", (void**)&obj) && obj)
 					{
@@ -32,7 +32,7 @@ namespace lua11
 			}
 		}
 		virtual ~Class() { }
-
+		 
 		operator bool() { return (bool)table; }
 		bool operator !() { return !table; }
 
@@ -73,11 +73,11 @@ namespace lua11
 	private:
 		lua_State* L;
 		Table table;
-		vector<shared_ptr<CallbackRef>> callbacks;
+		vector<shared_ptr<CallbackRef>>* callbacks;
 
 		bool set(const string& name, CallbackRef* callback)
 		{
-			callbacks.push_back(shared_ptr<CallbackRef>(callback));
+			callbacks->push_back(shared_ptr<CallbackRef>(callback));
 			return table.set(name, *callback);
 		}
 	};
