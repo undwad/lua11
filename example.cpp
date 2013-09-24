@@ -275,45 +275,86 @@ int main(int argc, char* argv[])
 	//	SAVESTACK
 	//}
 
+	////EXAMPLE 5!
+	//{
+	//	struct Test
+	//	{
+	//		Test() { cout << "ctor " << endl; }
+	//		void print(string s) { cout << "print " << s << endl; }
+	//	};
+	//	
+	//	Table table(&*L);
+	//	table.createNew();
+	//	auto init = MAKECALLBACK(&*L, [L](Table table)
+	//	{
+	//		auto obj = new Test();
+	//		table.set("__instance", (void*)obj);
+	//	});
+	//	table.set("init", init);
+	//	auto print = MAKECALLBACK(&*L, [L](Table table, string s)
+	//	{
+	//		Test* test;
+	//		if (table.get("__instance", (void**)&test))
+	//		{
+	//			test->print(s);
+	//		}
+	//	});
+	//	table.set("print", print);
+	//	table.setGlobal("Test");
+
+	//	ScriptText s(&*L, R"LUA(
+	//		print('JODER')
+	//		require 'class'
+	//		Test = class(Test)
+	//		function Test:init()
+	//			Test.base.init(self)
+	//			self.a = 'A'
+	//		end
+	//		function Test:print2(s)
+	//			print('print2', s)
+	//		end
+	//		t = Test()
+	//		print(t)
+	//		t:print2(123)
+	//		print(t.__instance)
+	//		t:print(123)
+	//		print(t.a)
+	//	)LUA");
+	//	s();
+	//	cout << s.error << endl;
+
+
+	//	SAVESTACK
+	//}
+
 	//EXAMPLE 5!
 	{
 		struct Test
 		{
-			Test() { cout << "ctor " << endl; }
+			Test() { cout << "Test()" << endl; }
+			~Test() { cout << "~Test()" << endl; }
 			void print(string s) { cout << "print " << s << endl; }
 		};
-		
-		Table table(&*L);
-		table.createNew();
-		auto init = MAKECALLBACK(&*L, [L](Table table)
-		{
-			auto obj = new Test();
-			table.set("__instance", (void*)obj);
-		});
-		table.set("init", init);
-		auto print = MAKECALLBACK(&*L, [L](Table table, string s)
-		{
-			Test* test;
-			if (table.get("__instance", (void**)&test))
-			{
-				test->print(s);
-			}
-		});
-		table.set("print", print);
-		table.setGlobal("Test");
+
+		Class<Test>(&*L).init();
 
 		ScriptText s(&*L, R"LUA(
 			print('JODER')
 			require 'class'
 			Test = class(Test)
+			--function Test:init()
+			--	Test.base.init(self)
+			--	self.a = 'A'
+			--end
 			function Test:print2(s)
 				print('print2', s)
 			end
 			t = Test()
 			print(t)
 			t:print2(123)
-			print(t.__instance)
-			t:print(123)
+			print(t.instance)
+			--t:print(123)
+			print(t.a)
 		)LUA");
 		s();
 		cout << s.error << endl;
@@ -321,7 +362,6 @@ int main(int argc, char* argv[])
 
 		SAVESTACK
 	}
-
 
 	return 0;
 }

@@ -7,7 +7,7 @@ function class(base, init)
 		for i,v in pairs(base) do
 			c[i] = v
 		end
-		c._base = base
+		c.base = base
 	end
 	local __index = c.__index
 	c.__index = function(t, k)
@@ -37,7 +37,7 @@ function class(base, init)
 		local m = getmetatable(self)
 		while m do 
 			if m == klass then return true end
-				m = m._base
+				m = m.base
 			end
 		return false
 	end
