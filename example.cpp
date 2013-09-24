@@ -292,6 +292,7 @@ int main(int argc, char* argv[])
 			Test = class(Test) --define class Test descendant of defined in C++ Test
 			function Test:init() --constructor of new Test class
 				Test.base.init(self) --call base constrcuctor
+				--Test.base.inits(self, 'some text') --call base constrcuctor
 				self.a = 'A' --initialize field
 			end
 			function Test:__gc() --define destructor
