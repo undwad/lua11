@@ -199,7 +199,7 @@
     <ClInclude Include="lua11\Value.h">
       <Filter>lua11</Filter>
     </ClInclude>
-    <ClInclude Include="lua11\Object.h">
+    <ClInclude Include="lua11\Class.h">
       <Filter>lua11</Filter>
     </ClInclude>
   </ItemGroup>

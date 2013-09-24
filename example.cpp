@@ -1,5 +1,5 @@
 /*
-** example.cpp 2013.09.23 09.16.42 undwad
+** example.cpp 2013.09.24 10.24.37 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h

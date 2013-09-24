@@ -1,5 +1,5 @@
 /*
-** lua11.h 2013.09.19 10.47.38 undwad
+** lua11.h 2013.09.24 10.24.37 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice at the end of this file
@@ -42,7 +42,7 @@ extern "C"
 #include "Function.h"
 #include "Table.h"
 #include "Callback.h"
-#include "Object.h"
+#include "Class.h"
 
 #pragma warning(default : 4800)
 #pragma warning(default : 4244)

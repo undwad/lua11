@@ -169,7 +169,7 @@
     <ClInclude Include="lua11\lua\lundump.h" />
     <ClInclude Include="lua11\lua\lvm.h" />
     <ClInclude Include="lua11\lua\lzio.h" />
-    <ClInclude Include="lua11\Object.h" />
+    <ClInclude Include="lua11\Class.h" />
     <ClInclude Include="lua11\stdmisc.h" />
     <ClInclude Include="lua11\Function.h" />
     <ClInclude Include="lua11\lua11.h" />
