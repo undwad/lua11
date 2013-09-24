@@ -273,12 +273,18 @@ int main(int argc, char* argv[])
 			Test(string s) { cout << "Test(" << s << ")" << endl; }
 			~Test() { cout << "~Test()" << endl; }
 			void print(string s) { cout << "print " << s << endl; } //test function
+			int add(int a, int b) //test function
+			{ 
+				cout << a << " + " << b << " = " << (a + b) << endl; 
+				return a + b; 
+			} 
 		};
 
 		Class<Test> test(&*L, "Test"); //define lua class in C++
 		test.init(); //define constructor "init"
 		test.init<string>("inits"); //define alternative constructor "inits"
 		test.set("print", &Test::print); //define function
+		test.set("add", &Test::add); //define function
 
 		{
 			ScriptText s(&*L, R"LUA(
@@ -298,6 +304,7 @@ int main(int argc, char* argv[])
 			print(t, t.instance) --print it
 			t:print2(123) --test lua function
 			t:print(123) --test c++ function
+			print(t:add(123, 321)) --test c++ function
 			print(t.a) --print field
 		)LUA");
 			s();
