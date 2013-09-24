@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.24 15.31.19 undwad
+** Class.h 2013.09.24 16.14.41 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -18,7 +18,7 @@ namespace lua11
 			callbacks = new vector<shared_ptr<CallbackRef>>();
 			if (table.createNew() && table.setGlobal(name))
 			{
-				auto callback = NEWCALLBACK(L, [](Table t)
+				auto callback = MAKECALLBACKPTR(L, [](Table t)
 				{
 					T* obj;
 					if (t.get("instance", (void**)&obj) && obj)
@@ -42,7 +42,7 @@ namespace lua11
 		{
 			if (table)
 			{
-				auto callback = NEWCALLBACK(L, [](Table t, P... p)
+				auto callback = MAKECALLBACKPTR(L, [](Table t, P... p)
 				{
 					auto obj = new T(p...);
 					return obj && t.set("instance", (void*)obj);
@@ -58,7 +58,7 @@ namespace lua11
 		{
 			if (table)
 			{
-				auto callback = NEWCALLBACK(L, [func](Table t, P... p)
+				auto callback = MAKECALLBACKPTR(L, [func](Table t, P... p)
 				{
 					T* obj;
 					if (t.get("instance", (void**)&obj) && obj)
