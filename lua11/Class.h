@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.24 10.24.37 undwad
+** Class.h 2013.09.24 14.29.57 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -17,9 +17,18 @@ namespace lua11
 		{ 
 			if (table.createNew() && table.setGlobal(name))
 			{
-				auto gc = new Callback<bool, Table>(L, _gc);
-				callbacks.push_back(shared_ptr<CallbackRef>(gc));
-				table.set("__gc", *gc);
+				auto callback = NEWCALLBACK(L, [](Table t)
+				{
+					cout << "__GC__" << endl;
+					T* obj;
+					if (t.get("instance", (void**)&obj) && obj)
+					{
+						delete obj;
+						return true;
+					}
+					return false;
+				});
+				set("__gc", callback);
 			}
 		}
 		virtual ~Class() { }
@@ -33,35 +42,43 @@ namespace lua11
 		{
 			if (table)
 			{
-				auto init = new Callback<bool, Table, P...>(L, _init<P...>);
-				callbacks.push_back(shared_ptr<CallbackRef>(init));
-				return table.set(name, *init);
+				auto callback = NEWCALLBACK(L, [](Table t, P... p)
+				{
+					auto obj = new T(p...);
+					return obj && t.set("instance", (void*)obj);
+				});
+				return set(name, callback);
 			}
 			return false;
 		}
 
 		template <typename ...P> bool init() { return init<P...>("init"); }
 
+		template <typename R, typename ...P> bool set(const string& name, R(T::*func)(P...))
+		{
+			if (table)
+			{
+				auto callback = NEWCALLBACK(L, [func](Table t, P... p)
+				{
+					T* obj;
+					if (t.get("instance", (void**)&obj) && obj)
+						return (obj->*func)(p...);
+					return R();
+				});
+				return set(name, callback);
+			}
+			return false;
+		}
+
 	private:
 		lua_State* L;
 		Table table;
 		vector<shared_ptr<CallbackRef>> callbacks;
 
-		static bool _gc(Table t)
+		bool set(const string& name, CallbackRef* callback)
 		{
-			T* obj;
-			if (t.get("instance", (void**)&obj) && obj)
-			{
-				delete obj;
-				return true;
-			}
-			return false;
-		}
-
-		template <typename ...P> static bool _init(Table t, P... p)
-		{
-			auto obj = new T(p...);
-			return obj && t.set("instance", (void*)obj);
+			callbacks.push_back(shared_ptr<CallbackRef>(callback));
+			return table.set(name, *callback);
 		}
 	};
 }

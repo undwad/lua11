@@ -1,5 +1,5 @@
 /*
-** example.cpp 2013.09.24 10.24.37 undwad
+** example.cpp 2013.09.24 14.29.57 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -339,6 +339,7 @@ int main(int argc, char* argv[])
 
 		Class<Test> test(&*L, "Test");
 		test.init();
+		test.set("print", &Test::print);
 		{
 			ScriptText s(&*L, R"LUA(
 			--debug.sethook(print, "l")
@@ -346,6 +347,7 @@ int main(int argc, char* argv[])
 			print('Test', Test)
 			print('Test.init', Test.init)
 			print('Test.__gc', Test.__gc)
+			Test.__gc({})
 			require 'class'
 			Test = class(Test)
 			--function Test:init()
@@ -363,7 +365,7 @@ int main(int argc, char* argv[])
 			print('t', t)
 			t:print2(123)
 			print('t.instance', t.instance)
-			--t:print(123)
+			t:print(123)
 			--print(t.a)
 		)LUA");
 			s();

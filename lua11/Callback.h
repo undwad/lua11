@@ -1,5 +1,5 @@
 /*
-** Callback.h 2013.09.23 14.38.15 undwad
+** Callback.h 2013.09.24 14.29.57 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -100,9 +100,11 @@ namespace lua11
 	struct CallbackFactory
 	{
 		template <typename R, typename ...T> static Callback<R, T...> make(lua_State* l, function<R(T...)> f) { return Callback<R, T...>(l, f); }
+		template <typename R, typename ...T> static Callback<R, T...>* new_(lua_State* l, function<R(T...)> f) { return new Callback<R, T...>(l, f); }
 	};
 
 #	define MAKECALLBACK(l, f) CallbackFactory::make(l, misc::make_function(f))
+#	define NEWCALLBACK(l, f) CallbackFactory::new_(l, misc::make_function(f))
 
 }
 
