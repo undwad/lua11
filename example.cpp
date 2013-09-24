@@ -337,33 +337,38 @@ int main(int argc, char* argv[])
 			void print(string s) { cout << "print " << s << endl; }
 		};
 
-		Class<Test>(&*L, "Test").init();
-
-		ScriptText s(&*L, R"LUA(
+		Class<Test> test(&*L, "Test");
+		test.init();
+		{
+			ScriptText s(&*L, R"LUA(
+			--debug.sethook(print, "l")
 			print('JODER')
-			print(Test)
-			print(Test.init)
-			print(Test.__gc)
-			Test.init({})
+			print('Test', Test)
+			print('Test.init', Test.init)
+			print('Test.__gc', Test.__gc)
 			require 'class'
 			Test = class(Test)
 			--function Test:init()
 			--	Test.base.init(self)
 			--	self.a = 'A'
 			--end
+			function Test:__gc()
+				print('__gc', Test.base.__gc, self)
+				Test.base.__gc(self)
+			end
 			function Test:print2(s)
 				print('print2', s)
 			end
 			t = Test()
-			print(t)
+			print('t', t)
 			t:print2(123)
-			print(t.instance)
+			print('t.instance', t.instance)
 			--t:print(123)
-			print(t.a)
+			--print(t.a)
 		)LUA");
-		s();
-		cout << s.error << endl;
-
+			s();
+			cout << s.error << endl;
+		}
 
 		SAVESTACK
 	}

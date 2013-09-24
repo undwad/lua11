@@ -17,12 +17,7 @@ namespace lua11
 		{ 
 			if (table.createNew() && table.setGlobal(name))
 			{
-				auto gc = new Callback<void, Table>(L, [this](Table t) 
-				{ 
-					T* obj;
-					if (t.get("instance", (void**)&obj) && obj)
-						delete obj;
-				});
+				auto gc = new Callback<bool, Table>(L, _gc);
 				callbacks.push_back(shared_ptr<CallbackRef>(gc));
 				table.set("__gc", *gc);
 			}
@@ -34,28 +29,40 @@ namespace lua11
 
 		string error() { return table.error; }
 
-		template <typename ...P> Class& init(const string& name)
+		template <typename ...P> bool init(const string& name)
 		{
 			if (table)
 			{
-				auto lambda = [this](Table t, P... p)
-				{ 
-					auto obj = new T(p...);
-					t.set("instance", (void*)obj);
-				};
-				auto init = new Callback<void, Table, P...>(L, lambda);
+				auto init = new Callback<bool, Table, P...>(L, _init<P...>);
 				callbacks.push_back(shared_ptr<CallbackRef>(init));
-				table.set(name, *init);
+				return table.set(name, *init);
 			}
-			return *this;
+			return false;
 		}
 
-		template <typename ...P> Class& init() { return init<P...>("init"); }
+		template <typename ...P> bool init() { return init<P...>("init"); }
 
 	private:
 		lua_State* L;
 		Table table;
 		vector<shared_ptr<CallbackRef>> callbacks;
+
+		static bool _gc(Table t)
+		{
+			T* obj;
+			if (t.get("instance", (void**)&obj) && obj)
+			{
+				delete obj;
+				return true;
+			}
+			return false;
+		}
+
+		template <typename ...P> static bool _init(Table t, P... p)
+		{
+			auto obj = new T(p...);
+			return obj && t.set("instance", (void*)obj);
+		}
 	};
 }
 
