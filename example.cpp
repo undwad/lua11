@@ -1,5 +1,5 @@
 /*
-** example.cpp 2013.09.24 15.42.22 undwad
+** example.cpp 2013.09.24 17.53.38 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -278,6 +278,11 @@ int main(int argc, char* argv[])
 				cout << a << " + " << b << " = " << (a + b) << endl; 
 				return a + b; 
 			} 
+			static int mul(int a, int b) //test static function
+			{
+				cout << a << " * " << b << " = " << (a * b) << endl;
+				return a * b;
+			}
 		};
 
 		Class<Test> test(&*L, "Test"); //define lua class in C++
@@ -285,9 +290,11 @@ int main(int argc, char* argv[])
 		test.init<string>("inits"); //define alternative constructor "inits"
 		test.set("print", &Test::print); //define function
 		test.set("add", &Test::add); //define function
+		test.setStatic("mul", &Test::mul); //define static function
 
 		{
 			ScriptText s(&*L, R"LUA(
+			print(Test.mul(100,6)) --test static function
 			require 'class' --import class module
 			Test = class(Test) --define class Test descendant of defined in C++ Test
 			function Test:init() --constructor of new Test class

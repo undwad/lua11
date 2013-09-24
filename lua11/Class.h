@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.24 16.14.41 undwad
+** Class.h 2013.09.24 17.53.38 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -64,6 +64,19 @@ namespace lua11
 					if (t.get("instance", (void**)&obj) && obj)
 						return (obj->*func)(p...);
 					return R();
+				});
+				return set(name, callback);
+			}
+			return false;
+		}
+
+		template <typename R, typename ...P> bool setStatic(const string& name, R(*func)(P...))
+		{
+			if (table)
+			{
+				auto callback = MAKECALLBACKPTR(L, [func](P... p)
+				{
+					return (*func)(p...);
 				});
 				return set(name, callback);
 			}
