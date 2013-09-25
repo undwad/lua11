@@ -15,11 +15,11 @@ namespace lua11
 		static T* get(Table& t)
 		{
 			void* ptr;
-			size_t type;
-			return t && t.get("type", &type) && typeid(T).hash_code() == type && t.get("ptr", &ptr) && ptr ? (T*)ptr : nullptr;
+			string type;
+			return t && t.get("type", &type) && typeid(T).name() == type && t.get("ptr", &ptr) && ptr ? (T*)ptr : nullptr;
 		}
 
-		static bool set(Table& t, T* ptr) { return t && ptr && t.set("type", typeid(T).hash_code()) && t.set("ptr", (void*)ptr); }
+		static bool set(Table& t, T* ptr) { return t && ptr && t.set("type", typeid(T).name()) && t.set("ptr", (void*)ptr); }
 	};
 
 	template <class T> class Class
