@@ -18,7 +18,7 @@ namespace lua11
 			callbacks = new vector<shared_ptr<CallbackRef>>();
 			if (table.createNew() && table.setGlobal(name) && table.set("type", typeid(T).hash_code()))
 			{
-				set("__gc", MAKECALLBACKPTR(L, [](Table t)
+				auto callback = MAKECALLBACKPTR(L, [](Table t)
 				{
 					if (T* ptr = get(t))
 					{
@@ -26,7 +26,8 @@ namespace lua11
 						return true;
 					}
 					return false;
-				}));
+				});
+				set("__gc", callback);
 			}
 		}
 		virtual ~Class() { }
@@ -39,7 +40,11 @@ namespace lua11
 		template <typename ...P> Class<T>& init(const string& name)
 		{
 			if (table)
-				set(name, MAKECALLBACKPTR(L, [](Table t, P... p) { return set(t, new T(p...)); }));
+			{
+				auto callback = MAKECALLBACKPTR(L, [](Table t, P... p) { return set(t, new T(p...)); });
+				set(name, callback);
+			}
+				
 			return *this;
 		}
 
@@ -48,19 +53,25 @@ namespace lua11
 		template <typename R, typename ...P> Class<T>& set(const string& name, R(T::*func)(P...))
 		{
 			if (table)
-				set(name, MAKECALLBACKPTR(L, [func](Table t, P... p)
+			{
+				auto callback = MAKECALLBACKPTR(L, [func](Table t, P... p)
 				{
 					if (T* ptr = get(t))
 						return (ptr->*func)(p...);
 					return R();
-				}));
+				});
+				set(name, callback);
+			}
 			return *this;
 		}
 
 		template <typename R, typename ...P> Class<T>& setStatic(const string& name, R(*func)(P...))
 		{
 			if (table)
-				set(name, MAKECALLBACKPTR(L, [func](P... p) { return (*func)(p...); }));
+			{
+				auto callback = MAKECALLBACKPTR(L, [func](P... p) { return (*func)(p...); });
+				set(name, callback);
+			}
 			return *this;
 		}
 
