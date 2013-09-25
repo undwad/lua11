@@ -213,5 +213,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="helloworld.lua" />
+    <None Include="class.lua" />
   </ItemGroup>
 </Project>

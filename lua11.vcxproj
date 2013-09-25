@@ -179,6 +179,7 @@
     <ClInclude Include="lua11\Value.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="class.lua" />
     <None Include="helloworld.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

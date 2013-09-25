@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.24 17.53.38 undwad
+** Class.h 2013.09.25 09.51.46 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -16,19 +16,17 @@ namespace lua11
 		Class(lua_State* l, const string& name) : L(l), table(L)
 		{ 
 			callbacks = new vector<shared_ptr<CallbackRef>>();
-			if (table.createNew() && table.setGlobal(name))
+			if (table.createNew() && table.setGlobal(name) && table.set("type", typeid(T).hash_code()))
 			{
-				auto callback = MAKECALLBACKPTR(L, [](Table t)
+				set("__gc", MAKECALLBACKPTR(L, [](Table t)
 				{
-					T* obj;
-					if (t.get("instance", (void**)&obj) && obj)
+					if (T* ptr = get(t))
 					{
-						delete obj;
+						delete ptr;
 						return true;
 					}
 					return false;
-				});
-				set("__gc", callback);
+				}));
 			}
 		}
 		virtual ~Class() { }
@@ -40,53 +38,39 @@ namespace lua11
 
 		template <typename ...P> bool init(const string& name)
 		{
-			if (table)
-			{
-				auto callback = MAKECALLBACKPTR(L, [](Table t, P... p)
-				{
-					auto obj = new T(p...);
-					return obj && t.set("instance", (void*)obj);
-				});
-				return set(name, callback);
-			}
-			return false;
+			return table ? set(name, MAKECALLBACKPTR(L, [](Table t, P... p) { return set(t, new T(p...)); })) : false;
 		}
 
 		template <typename ...P> bool init() { return init<P...>("init"); }
 
 		template <typename R, typename ...P> bool set(const string& name, R(T::*func)(P...))
 		{
-			if (table)
+			return table ? set(name, MAKECALLBACKPTR(L, [func](Table t, P... p)
 			{
-				auto callback = MAKECALLBACKPTR(L, [func](Table t, P... p)
-				{
-					T* obj;
-					if (t.get("instance", (void**)&obj) && obj)
-						return (obj->*func)(p...);
-					return R();
-				});
-				return set(name, callback);
-			}
-			return false;
+				if (T* ptr = get(t))
+					return (ptr->*func)(p...);
+				return R();
+			})) : false;
 		}
 
 		template <typename R, typename ...P> bool setStatic(const string& name, R(*func)(P...))
 		{
-			if (table)
-			{
-				auto callback = MAKECALLBACKPTR(L, [func](P... p)
-				{
-					return (*func)(p...);
-				});
-				return set(name, callback);
-			}
-			return false;
+			return table ? set(name, MAKECALLBACKPTR(L, [func](P... p) { return (*func)(p...); })) : false;
+		}
+
+		static T* get(Table& t)
+		{
+			void* ptr;
+			size_t type;
+			return t && t.get("type", &type) && typeid(T).hash_code() == type && t.get("ptr", &ptr) && ptr ? (T*)ptr : nullptr;
 		}
 
 	private:
 		lua_State* L;
 		Table table;
 		vector<shared_ptr<CallbackRef>>* callbacks;
+
+		static bool set(Table& t, T* ptr) { return t && ptr && t.set("type", typeid(T).hash_code()) && t.set("ptr", (void*)ptr); }
 
 		bool set(const string& name, CallbackRef* callback)
 		{
