@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.25 14.51.26 undwad
+** Class.h 2013.09.25 15.47.35 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -81,7 +81,7 @@ namespace lua11
 		{
 			if (table)
 			{
-				auto callback = MAKECALLBACKPTR(L, [func](P... p) { return (*func)(p...); });
+				auto callback = MAKECALLBACKPTR(L, [func](Table t, P... p) { return (*func)(p...); });
 				store(name, callback);
 			}
 			return *this;

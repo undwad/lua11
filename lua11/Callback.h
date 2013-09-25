@@ -1,5 +1,5 @@
 /*
-** Callback.h 2013.09.24 16.14.41 undwad
+** Callback.h 2013.09.25 15.42.58 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
