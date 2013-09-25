@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.25 10.56.34 undwad
+** Class.h 2013.09.25 14.51.26 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -39,7 +39,7 @@ namespace lua11
 					}
 					return false;
 				});
-				set("__gc", callback);
+				store("__gc", callback);
 			}
 		}
 		virtual ~Class() { }
@@ -54,7 +54,7 @@ namespace lua11
 			if (table)
 			{
 				auto callback = MAKECALLBACKPTR(L, [](Table t, P... p) { return ClassUtils<T>::set(t, new T(p...)); });
-				set(name, callback);
+				store(name, callback);
 			}
 				
 			return *this;
@@ -72,22 +72,22 @@ namespace lua11
 						return (ptr->*func)(p...);
 					return R();
 				});
-				set(name, callback);
+				store(name, callback);
 			}
 			return *this;
 		}
 
-		template <typename R, typename ...P> Class<T>& setStatic(const string& name, R(*func)(P...))
+		template <typename R, typename ...P> Class<T>& set(const string& name, R(*func)(P...))
 		{
 			if (table)
 			{
 				auto callback = MAKECALLBACKPTR(L, [func](P... p) { return (*func)(p...); });
-				set(name, callback);
+				store(name, callback);
 			}
 			return *this;
 		}
 
-		template <typename P> Class<T>& setStatic(const string& name, P p)
+		template <typename P> Class<T>& set(const string& name, P p)
 		{
 			if (table)
 				table.set(name, p);
@@ -99,8 +99,7 @@ namespace lua11
 		Table table;
 		vector<shared_ptr<CallbackRef>>* callbacks;
 
-
-		bool set(const string& name, CallbackRef* callback)
+		bool store(const string& name, CallbackRef* callback)
 		{
 			callbacks->push_back(shared_ptr<CallbackRef>(callback));
 			return table.set(name, *callback);
