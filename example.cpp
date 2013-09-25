@@ -1,5 +1,5 @@
 /*
-* * example.cpp 2013.09.25 10.29.20 undwad
+* * example.cpp 2013.09.25 10.56.34 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -313,12 +313,11 @@ int main(int argc, char* argv[])
 				print('print2', s)
 			end
 			t = Test() --create instance
-			print(t, t.instance) --print it
+			print(t, t.ptr, t.type, t:is(Test)) --print instance info
 			t:print2(123) --test lua function
 			t:print(123) --test c++ function
 			print(t:add(123, 321)) --test c++ function
 			print(t.a) --print field
-			print(t:is(Test), t.type, t.ptr) --print instance info
 		)LUA");
 			s();
 			cout << s.error << endl;

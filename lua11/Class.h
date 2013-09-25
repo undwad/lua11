@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.25 10.29.20 undwad
+** Class.h 2013.09.25 10.56.34 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -10,6 +10,18 @@
 
 namespace lua11 
 {
+	template <class T> struct ClassUtils
+	{
+		static T* get(Table& t)
+		{
+			void* ptr;
+			size_t type;
+			return t && t.get("type", &type) && typeid(T).hash_code() == type && t.get("ptr", &ptr) && ptr ? (T*)ptr : nullptr;
+		}
+
+		static bool set(Table& t, T* ptr) { return t && ptr && t.set("type", typeid(T).hash_code()) && t.set("ptr", (void*)ptr); }
+	};
+
 	template <class T> class Class
 	{
 	public:
@@ -20,7 +32,7 @@ namespace lua11
 			{
 				auto callback = MAKECALLBACKPTR(L, [](Table t)
 				{
-					if (T* ptr = get(t))
+					if (T* ptr = ClassUtils<T>::get(t))
 					{
 						delete ptr;
 						return true;
@@ -41,7 +53,7 @@ namespace lua11
 		{
 			if (table)
 			{
-				auto callback = MAKECALLBACKPTR(L, [](Table t, P... p) { return set(t, new T(p...)); });
+				auto callback = MAKECALLBACKPTR(L, [](Table t, P... p) { return ClassUtils<T>::set(t, new T(p...)); });
 				set(name, callback);
 			}
 				
@@ -56,7 +68,7 @@ namespace lua11
 			{
 				auto callback = MAKECALLBACKPTR(L, [func](Table t, P... p)
 				{
-					if (T* ptr = get(t))
+					if (T* ptr = ClassUtils<T>::get(t))
 						return (ptr->*func)(p...);
 					return R();
 				});
@@ -82,19 +94,11 @@ namespace lua11
 			return *this;
 		}
 
-		static T* get(Table& t)
-		{
-			void* ptr;
-			size_t type;
-			return t && t.get("type", &type) && typeid(T).hash_code() == type && t.get("ptr", &ptr) && ptr ? (T*)ptr : nullptr;
-		}
-
 	private:
 		lua_State* L;
 		Table table;
 		vector<shared_ptr<CallbackRef>>* callbacks;
 
-		static bool set(Table& t, T* ptr) { return t && ptr && t.set("type", typeid(T).hash_code()) && t.set("ptr", (void*)ptr); }
 
 		bool set(const string& name, CallbackRef* callback)
 		{
