@@ -1,5 +1,5 @@
 /*
-** lua11.h 2013.09.24 10.24.37 undwad
+** lua11.h 2013.09.25 13.54.41 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice at the end of this file
@@ -23,14 +23,9 @@
 using namespace std;
 using namespace placeholders;
 
-extern "C"
-{
-#	ifndef LUA_VERSION
-#		include "lua/lua.h"
-#		include "lua/lauxlib.h"
-#		include "lua/lualib.h" 
-#	endif
-}
+#ifndef LUA_VERSION
+#	include "lua/lua.hpp"
+#endif
 
 #pragma warning(disable : 4800)
 #pragma warning(disable : 4244)
