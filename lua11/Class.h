@@ -1,5 +1,5 @@
 /*
-** Class.h 2013.09.25 09.51.46 undwad
+** Class.h 2013.09.25 10.29.20 undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -36,26 +36,39 @@ namespace lua11
 
 		string error() { return table.error; }
 
-		template <typename ...P> bool init(const string& name)
+		template <typename ...P> Class<T>& init(const string& name)
 		{
-			return table ? set(name, MAKECALLBACKPTR(L, [](Table t, P... p) { return set(t, new T(p...)); })) : false;
+			if (table)
+				set(name, MAKECALLBACKPTR(L, [](Table t, P... p) { return set(t, new T(p...)); }));
+			return *this;
 		}
 
-		template <typename ...P> bool init() { return init<P...>("init"); }
+		template <typename ...P> Class<T>& init() { return init<P...>("init"); }
 
-		template <typename R, typename ...P> bool set(const string& name, R(T::*func)(P...))
+		template <typename R, typename ...P> Class<T>& set(const string& name, R(T::*func)(P...))
 		{
-			return table ? set(name, MAKECALLBACKPTR(L, [func](Table t, P... p)
-			{
-				if (T* ptr = get(t))
-					return (ptr->*func)(p...);
-				return R();
-			})) : false;
+			if (table)
+				set(name, MAKECALLBACKPTR(L, [func](Table t, P... p)
+				{
+					if (T* ptr = get(t))
+						return (ptr->*func)(p...);
+					return R();
+				}));
+			return *this;
 		}
 
-		template <typename R, typename ...P> bool setStatic(const string& name, R(*func)(P...))
+		template <typename R, typename ...P> Class<T>& setStatic(const string& name, R(*func)(P...))
 		{
-			return table ? set(name, MAKECALLBACKPTR(L, [func](P... p) { return (*func)(p...); })) : false;
+			if (table)
+				set(name, MAKECALLBACKPTR(L, [func](P... p) { return (*func)(p...); }));
+			return *this;
+		}
+
+		template <typename P> Class<T>& setStatic(const string& name, P p)
+		{
+			if (table)
+				table.set(name, p);
+			return *this;
 		}
 
 		static T* get(Table& t)
