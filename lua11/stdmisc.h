@@ -20,27 +20,27 @@ namespace std
 			return cast(input, output) ? output : defval;
 		}
 
-		template<class... Args, class Ret> static Ret forward(tuple<Args...> tuple, Ret (*fptr) (Args...))
+		template<class... A, class R> static R forward(tuple<A...> tuple, R (*fptr) (A...))
 		{
-			typedef typename make_indices<Args...>::type Indices;
+			typedef typename make_indices<A...>::type Indices;
 			return forward_impl(Indices(), tuple, fptr);
 		}
 
-		template<class... Args, class Ret> static Ret forward(tuple<Args...> tuple, function<Ret(Args...)> func)
+		template<class... A, class R> static R forward(tuple<A...> tuple, function<R(A...)> func)
 		{
-			typedef typename make_indices<Args...>::type Indices;
+			typedef typename make_indices<A...>::type Indices;
 			return forward_impl(Indices(), tuple, func);
 		}
 
-		template<class... Args, class Ret> static Ret forwardref(tuple<Args...>& tuple, Ret (*fptr) (Args&...))
+		template<class... A, class R> static R forwardref(tuple<A...>& tuple, R (*fptr) (A&...))
 		{
-			typedef typename make_indices<Args...>::type Indices;
+			typedef typename make_indices<A...>::type Indices;
 			return forwardref_impl(Indices(), tuple, fptr);
 		}
 
-		template<class... Args, class Ret> static Ret forwardref(tuple<Args...>& tuple, function<Ret(Args&...)> func)
+		template<class... A, class R> static R forwardref(tuple<A...>& tuple, function<R(A&...)> func)
 		{
-			typedef typename make_indices<Args...>::type Indices;
+			typedef typename make_indices<A...>::type Indices;
 			return forwardref_impl(Indices(), tuple, func);
 		}
 
@@ -75,22 +75,22 @@ namespace std
 
 		template<typename... Types> struct make_indices : make_indices_impl<0, index_tuple<>, Types...> { };
 
-		template <unsigned... Indices, class... Args, class Ret> static Ret forward_impl(index_tuple<Indices...>, tuple<Args...> tuple, Ret (*fptr) (Args...))
+		template <unsigned... Indices, class... A, class R> static R forward_impl(index_tuple<Indices...>, tuple<A...> tuple, R (*fptr) (A...))
 		{
 			return fptr(get<Indices>(tuple)...);
 		}
 
-		template <unsigned... Indices, class... Args, class Ret> static Ret forward_impl(index_tuple<Indices...>, tuple<Args...> tuple, function<Ret(Args...)> func)
+		template <unsigned... Indices, class... A, class R> static R forward_impl(index_tuple<Indices...>, tuple<A...> tuple, function<R(A...)> func)
 		{
 			return func(get<Indices>(tuple)...);
 		}
 
-		template <unsigned... Indices, class... Args, class Ret> static Ret forwardref_impl(index_tuple<Indices...>, tuple<Args...>& tuple, Ret (*fptr) (Args&...))
+		template <unsigned... Indices, class... A, class R> static R forwardref_impl(index_tuple<Indices...>, tuple<A...>& tuple, R (*fptr) (A&...))
 		{
 			return fptr(get<Indices>(tuple)...);
 		}
 
-		template <unsigned... Indices, class... Args, class Ret> static Ret forwardref_impl(index_tuple<Indices...>, tuple<Args...>& tuple, function<Ret(Args&...)> func)
+		template <unsigned... Indices, class... A, class R> static R forwardref_impl(index_tuple<Indices...>, tuple<A...>& tuple, function<R(A&...)> func)
 		{
 			return func(get<Indices>(tuple)...);
 		}
