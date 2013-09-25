@@ -73,10 +73,10 @@ namespace lua11
 		template<typename ...P> int callfunc(lua_State *L, function<void(P...)>)
 		{
 			tuple<P...> p;
-			function<bool(P&...)> params = [this, L](P&... p) { return param(L, 1, p...); };
-			if (std::misc::forwardref(p, params))
+			auto params = misc::make_function([this, L](P&... p) { return param(L, 1, p...); });
+			if (misc::forwardref(p, params))
 			{
-				std::misc::forward(p, func);
+				misc::forward(p, func);
 				return 0;
 			}
 			else return paramerror();
@@ -85,10 +85,10 @@ namespace lua11
 		template<typename Q, typename ...P> int callfunc(lua_State *L, function<Q(P...)>)
 		{
 			tuple<P...> p;
-			function<bool(P&...)> params = [this, L](P&... p) { return param(L, 1, p...); };
-			if (std::misc::forwardref(p, params))
+			auto params = misc::make_function([this, L](P&... p) { return param(L, 1, p...); });
+			if (misc::forwardref(p, params))
 			{
-				Stack::push(L, std::misc::forward(p, func));
+				Stack::push(L, misc::forward(p, func));
 				return 1;
 			}
 			else return paramerror();
