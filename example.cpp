@@ -270,6 +270,7 @@ int main(int argc, char* argv[])
 		struct Test //test class
 		{
 			Test() { cout << "Test()" << endl; } 
+			Test(lua_State* l) { cout << "Test(" << (void*)l << ")" << endl; }
 			Test(lua_State* l, string s) { cout << "Test(" << (void*)l << ", " << s << ")" << endl; }
 			~Test() { cout << "~Test()" << endl; }
 			void print(string s) { cout << "print " << s << endl; } //test function
@@ -288,6 +289,7 @@ int main(int argc, char* argv[])
 
 		auto test = Class<Test>(&*L, "Test") //define lua class in C++
 			.init() //define constructor "init"
+			.initL("initl") //define alternative constructor "inits"
 			.initL<string>("inits") //define alternative constructor "inits"
 			.set("print", &Test::print) //define function
 			.set("add", &Test::add) //define function
@@ -306,6 +308,7 @@ int main(int argc, char* argv[])
 			Test = class(Test) --define class Test descendant of defined in C++ Test
 			function Test:init() --constructor of new Test class
 				Test.base.init(self) --call base constrcuctor
+				--Test.base.initl(self) --call base constrcuctor
 				--Test.base.inits(self, 'some text') --call base constrcuctor
 				self.a = 'A' --initialize field
 			end
