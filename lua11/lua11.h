@@ -1,5 +1,5 @@
 /*
-** lua11.h 2013.09.25 13.54.41 undwad
+** lua11.h by undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice at the end of this file

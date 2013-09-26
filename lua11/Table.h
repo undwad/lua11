@@ -1,5 +1,5 @@
-/* 
-**	Table.h 2013.09.23 09.16.42 undwad
+/* 	
+** Table.h by undwad
 ** lua11 is a very lightweight binding lua with C++11
 ** https://github.com/undwad/lua11 mailto:undwad@mail.ru
 ** see copyright notice in lua11.h
@@ -293,11 +293,19 @@ namespace lua11
 
 #		define TYPENAME(K, KV) string typeName(K) { return lua_typename(L, type(KV)); }
 
-		TYPENAME(const string& key, key)
-		TYPENAME(int key, key)
+TYPENAME(const string& key, key)
+TYPENAME(int key, key)
 
 #		undef TYPENAME
 
+		template <class T> T* getptr()
+		{
+			void* ptr;
+			string type;
+			return *this && get("type", &type) && typeid(T).name() == type && get("ptr", &ptr) && ptr ? (T*)ptr : nullptr;
+		}
+
+		template <class T> bool setptr(T* ptr) { return *this && ptr && set("type", typeid(T).name()) && set("ptr", (void*)ptr); }
 	};
 }
 
