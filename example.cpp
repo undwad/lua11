@@ -270,7 +270,7 @@ int main(int argc, char* argv[])
 		struct Test //test class
 		{
 			Test() { cout << "Test()" << endl; } 
-			Test(lua_State* l, string s) { cout << "Test(" << (int)l << ", " << s << ")" << endl; }
+			Test(lua_State* l, string s) { cout << "Test(" << (void*)l << ", " << s << ")" << endl; }
 			~Test() { cout << "~Test()" << endl; }
 			void print(string s) { cout << "print " << s << endl; } //test function
 			int add(int a, int b) //test function
