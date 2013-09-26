@@ -27,6 +27,8 @@ using namespace placeholders;
 #	include "lua/lua.hpp"
 #endif
 
+static string error;
+
 #pragma warning(disable : 4800)
 #pragma warning(disable : 4244)
 

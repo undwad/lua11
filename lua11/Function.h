@@ -25,7 +25,7 @@ namespace lua11
 			if(Stack::is(L, this))
 				return FunctionRef::pop(L);
 			lua_pop(L, 1);
-			error = string(name) + " is not function";
+			::error = error = string(name) + " is not function";
 			return false;
 		}
 
@@ -49,7 +49,7 @@ namespace lua11
 				{
 					if(lua_pcall(L, count, -(index), 0))
 					{
-						error = lua_tostring(L, -1);
+						::error = error = lua_tostring(L, -1);
 						lua_pop(L, 1);
 						return false;
 					}
@@ -116,7 +116,7 @@ namespace lua11
 					} \
 					else \
 					{ \
-						error = string("type mismatch "#T" <> ") + lua_typename(L, lua_type(L, index)); \
+						::error = error = string("type mismatch "#T" <> ") + lua_typename(L, lua_type(L, index)); \
 						lua_settop(L, index - 1); \
 						return false; \
 					} \
@@ -160,7 +160,7 @@ namespace lua11
 			{ \
 				if(F(L, s.c_str())) \
 				{ \
-					error = lua_tostring(L, -1); \
+					::error = error = lua_tostring(L, -1); \
 					lua_pop(L, 0); \
 					return false; \
 				} \

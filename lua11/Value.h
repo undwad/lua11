@@ -31,7 +31,7 @@ namespace lua11
 			lua_getglobal(L, name.c_str());
 			if (Stack::is(L, this))
 				return ValueRef::pop(L);
-			error = string(name) + " is not value";
+			::error = error = string(name) + " is not value";
 			return false;
 		}
 

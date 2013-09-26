@@ -24,7 +24,7 @@ namespace lua11
 			lua_getglobal(L, name.c_str());
 			if(Stack::is(L, this))
 				return TableRef::pop(L);
-			error = string(name) + " is not table";
+			::error = error = string(name) + " is not table";
 			return false;
 		}
 
@@ -57,7 +57,7 @@ namespace lua11
 						result = true;
 					}
 				}
-				else error = "can not get metatable";
+				else ::error = error = "can not get metatable";
 				lua_pop(L, 1);
 			}
 			return result;
@@ -71,7 +71,7 @@ namespace lua11
 				Stack::push(L, mt);
 				if(lua_setmetatable(L, -2))
 					result = true;
-				else error = "can not set metatable";
+				else ::error = error = "can not set metatable";
 				lua_pop(L, 1);
 			}
 			return result;
@@ -233,7 +233,7 @@ namespace lua11
 					} \
 					else \
 					{ \
-						error = string("type mismatch "#T" <> ") + lua_typename(L, lua_type(L, -1)); \
+						::error = error = string("type mismatch "#T" <> ") + lua_typename(L, lua_type(L, -1)); \
 						lua_pop(L, 1); \
 					} \
 				} \
