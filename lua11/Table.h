@@ -298,6 +298,13 @@ TYPENAME(int key, key)
 
 #		undef TYPENAME
 
+		template <typename T> T get(const string& name)
+		{
+			T result = T();
+			get(name, &result);
+			return result;
+		}
+
 		template <class T> T* getptr()
 		{
 			void* ptr;
