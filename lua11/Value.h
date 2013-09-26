@@ -82,6 +82,13 @@ namespace lua11
 		}
 
 		string typeName() { return lua_typename(L, type()); }
+
+		template <typename T> T get()
+		{
+			T result = T();
+			get(&result);
+			return result;
+		}
 	};
 }
 
