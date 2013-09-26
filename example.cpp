@@ -270,7 +270,7 @@ int main(int argc, char* argv[])
 		struct Test //test class
 		{
 			Test() { cout << "Test()" << endl; } 
-			Test(string s) { cout << "Test(" << s << ")" << endl; }
+			Test(lua_State* l, string s) { cout << "Test(" << (int)l << ", " << s << ")" << endl; }
 			~Test() { cout << "~Test()" << endl; }
 			void print(string s) { cout << "print " << s << endl; } //test function
 			int add(int a, int b) //test function
@@ -288,7 +288,7 @@ int main(int argc, char* argv[])
 
 		auto test = Class<Test>(&*L, "Test") //define lua class in C++
 			.init() //define constructor "init"
-			.init<string>("inits") //define alternative constructor "inits"
+			.initL<string>("inits") //define alternative constructor "inits"
 			.set("print", &Test::print) //define function
 			.set("add", &Test::add) //define function
 			.set("mul", &Test::mul) //define static function

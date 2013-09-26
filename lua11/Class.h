@@ -44,11 +44,22 @@ namespace lua11
 				auto callback = MAKECALLBACKPTR(L, [](Table t, P... p) { return t.setptr(new T(p...)); });
 				store(name, callback);
 			}
-				
 			return *this;
 		}
 
 		template <typename ...P> Class<T>& init() { return init<P...>("init"); }
+
+		template <typename ...P> Class<T>& initL(const string& name)
+		{
+			if (table)
+			{
+				auto callback = MAKECALLBACKPTR(L, [this](Table t, P... p) { return t.setptr(new T(L, p...)); });
+				store(name, callback);
+			}
+			return *this;
+		}
+
+		template <typename ...P> Class<T>& initL() { return initL<P...>("init"); }
 
 		template <typename R, typename ...P> Class<T>& set(const string& name, R(T::*func)(P...))
 		{
