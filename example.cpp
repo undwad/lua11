@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 						print(i, text);
 
 				//if table values are of the same type it is possible to iterate thru them
-				vector<string> values; //vector for table values
+				list<string> values; //vector for table values
 				if (table.getValues(values)) //get table values
 				for (auto value : values) //print table keys
 					print(value);
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 			if (table.getGlobal("table")) //get global table
 			{
 				//if table keys are of the same type it is possible to iterate thru them
-				vector<string> keys; //vector for table keys
+				list<string> keys; //vector for table keys
 				if (table.getKeys(keys)) //get table keys
 				for (auto key : keys) //print table keys
 					print(key);

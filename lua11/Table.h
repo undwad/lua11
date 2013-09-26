@@ -88,7 +88,7 @@ namespace lua11
 			return result;
 		}
 
-		template <typename T> bool getKeys(vector<T>&  keys)
+		template <typename T, typename ...A, template <typename...> class C> bool getKeys(C<T, A...>&  keys)
 		{
 			keys.clear();
 			bool result = false;
@@ -116,7 +116,7 @@ namespace lua11
 			return result;
 		}
 
-		template <typename T> bool getValues(vector<T>&  values)
+		template <typename T, typename ...A, template <typename...> class C> bool getValues(C<T, A...>&  values)
 		{
 			values.clear();
 			bool result = false;
@@ -143,7 +143,7 @@ namespace lua11
 			return result;
 		}
 
-		template <typename K, typename V> bool getMap(map<K, V>& map)
+		template <typename K, typename V, typename ...A, template <typename...> class C> bool getMap(C<K, V, A...>& map)
 		{
 			map.clear();
 			bool result = false;
