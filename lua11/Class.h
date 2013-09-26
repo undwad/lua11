@@ -49,16 +49,6 @@ namespace lua11
 
 		template <typename ...P> Class<T>& init() { return init<P...>("init"); }
 
-		Class<T>& initL(const string& name)
-		{
-			if (table)
-			{
-				auto callback = MAKECALLBACKPTR(L, [this](Table t) { return t.setptr(new T(L)); });
-				store(name, callback);
-			}
-			return *this;
-		}
-
 		template <typename ...P> Class<T>& initL(const string& name)
 		{
 			if (table)
@@ -70,6 +60,18 @@ namespace lua11
 		}
 
 		template <typename ...P> Class<T>& initL() { return initL<P...>("init"); }
+
+		Class<T>& initL(const string& name)
+		{
+			if (table)
+			{
+				auto callback = MAKECALLBACKPTR(L, [this](Table t) { return t.setptr(new T(L)); });
+				store(name, callback);
+			}
+			return *this;
+		}
+
+		Class<T>& initL() { return initL("init"); }
 
 		template <typename R, typename ...P> Class<T>& set(const string& name, R(T::*func)(P...))
 		{
