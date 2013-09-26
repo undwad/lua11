@@ -46,12 +46,10 @@ namespace lua11
 	public:
 		RegistryRef() : index(LUA_NOREF) { }
 		RegistryRef(lua_State* l) : Ref(l), index(LUA_NOREF) { }
-		RegistryRef(const RegistryRef& r) : Ref(r), index(LUA_NOREF)
-		{ 
-			if(r.push(L))
-				pop(L); 
-		}
+		RegistryRef(const RegistryRef& r) : Ref(r), index(LUA_NOREF) { copy(r); }
 		virtual ~RegistryRef() { free(); }
+
+		bool copy(const RegistryRef& r) { return r.push(L) && pop(L); }
 
 		operator bool() { return LUA_NOREF != index; }
 		bool operator !() { return LUA_NOREF == index; }
