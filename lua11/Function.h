@@ -61,6 +61,13 @@ namespace lua11
 			return false;
 		}
 
+		template <typename R, typename ...T> R get(T... p)
+		{
+			R result = R();
+			operator ()(&result, p...);
+			return result;
+		}
+
 	private:
 		enum Dir { In, Out } dir;
 		int count, index;
