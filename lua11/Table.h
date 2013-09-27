@@ -309,10 +309,10 @@ TYPENAME(int key, key)
 		{
 			void* ptr;
 			string type;
-			return *this && get("type", &type) && typeid(T).name() == type && get("ptr", &ptr) && ptr ? (T*)ptr : nullptr;
+			return *this && get("__type", &type) && typeid(T).name() == type && get("__ptr", &ptr) && ptr ? (T*)ptr : nullptr;
 		}
 
-		template <class T> bool setptr(T* ptr) { return *this && ptr && set("type", typeid(T).name()) && set("ptr", (void*)ptr); }
+		template <class T> bool setptr(T* ptr) { return *this && ptr && set("__type", typeid(T).name()) && set("__ptr", (void*)ptr); }
 	};
 }
 

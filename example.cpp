@@ -289,8 +289,8 @@ int main(int argc, char* argv[])
 
 		auto test = Class<Test>(&*L, "Test") //define lua class in C++
 			.init() //define constructor "init"
-			.initL("initl") //define alternative constructor "inits"
-			.initL<string>("inits") //define alternative constructor "inits"
+			.initL("__initl") //define alternative constructor "inits"
+			.initL<string>("__inits") //define alternative constructor "inits"
 			.set("print", &Test::print) //define function
 			.set("add", &Test::add) //define function
 			.set("mul", &Test::mul) //define static function
@@ -306,10 +306,10 @@ int main(int argc, char* argv[])
 			print(Test:getstr()) --test static function
 			require 'class' --import class module
 			Test = class(Test) --define class Test descendant of defined in C++ Test
-			function Test:init() --constructor of new Test class
-				Test.base.init(self) --call base constrcuctor
-				--Test.base.initl(self) --call base constrcuctor
-				--Test.base.inits(self, 'some text') --call base constrcuctor
+			function Test:__init() --constructor of new Test class
+				Test.__base.__init(self) --call base constrcuctor
+				--Test.__base.__initl(self) --call base constrcuctor
+				--Test.__base.__inits(self, 'some text') --call base constrcuctor
 				self.a = 'A' --initialize field
 			end
 			function Test:__gc() --define destructor
@@ -319,7 +319,7 @@ int main(int argc, char* argv[])
 				print('print2', s)
 			end
 			t = Test() --create instance
-			print(t, t.ptr, t.type, t:is(Test)) --print instance info
+			print(t, t.__ptr, t.__type, t:__is(Test)) --print instance info
 			t:print2(123) --test lua function
 			t:print(123) --test c++ function
 			print(t:add(123, 321)) --test c++ function

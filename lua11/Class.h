@@ -47,7 +47,7 @@ namespace lua11
 			return *this;
 		}
 
-		template <typename ...P> Class<T>& init() { return init<P...>("init"); }
+		template <typename ...P> Class<T>& init() { return init<P...>("__init"); }
 
 		template <typename ...P> Class<T>& initL(const string& name)
 		{
@@ -59,7 +59,7 @@ namespace lua11
 			return *this;
 		}
 
-		template <typename ...P> Class<T>& initL() { return initL<P...>("init"); }
+		template <typename ...P> Class<T>& initL() { return initL<P...>("__init"); }
 
 		Class<T>& initL(const string& name)
 		{
@@ -71,7 +71,7 @@ namespace lua11
 			return *this;
 		}
 
-		Class<T>& initL() { return initL("init"); }
+		Class<T>& initL() { return initL("__init"); }
 
 		template <typename R, typename ...P> Class<T>& set(const string& name, R(T::*func)(P...))
 		{

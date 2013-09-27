@@ -7,7 +7,7 @@ function class(base, init)
 		for i,v in pairs(base) do
 			c[i] = v
 		end
-		c.base = base
+		c.__base = base
 	end
 	local __index = c.__index
 	c.__index = function(t, k)
@@ -25,19 +25,19 @@ function class(base, init)
 	mt.__call = function(class_tbl, ...)
 		local obj = {}
 		setmetatable(obj,c)
-		if class_tbl.init then
-			class_tbl.init(obj, ...)
-		elseif base and base.init then
-			base.init(obj, ...)
+		if class_tbl.__init then
+			class_tbl.__init(obj, ...)
+		elseif base and base.__init then
+			base.__init(obj, ...)
 		end
 		return obj
 	end
-	c.init = init
-	c.is = function(self, klass)
+	c.__init = init
+	c.__is = function(self, klass)
 		local m = getmetatable(self)
 		while m do 
 			if m == klass then return true end
-				m = m.base
+				m = m.__base
 			end
 		return false
 	end
