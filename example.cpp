@@ -279,6 +279,7 @@ int main(int argc, char* argv[])
 				cout << a << " + " << b << " = " << (a + b) << endl; 
 				return a + b; 
 			} 
+			bool checkself(Test* self) { return this == self; }
 			static int mul(int a, int b) //test static function
 			{
 				cout << a << " * " << b << " = " << (a * b) << endl;
@@ -293,6 +294,7 @@ int main(int argc, char* argv[])
 			.initL<string>("__inits") //define alternative constructor "inits"
 			.set("print", &Test::print) //define function
 			.set("add", &Test::add) //define function
+			.set("checkself", &Test::checkself) //define function
 			.set("mul", &Test::mul) //define static function
 			.set("getstr", &Test::getstr) //define static function
 			.set("typeinfo", "test c++ type"); //define static field
@@ -324,6 +326,8 @@ int main(int argc, char* argv[])
 			t:print(123) --test c++ function
 			print(t:add(123, 321)) --test c++ function
 			print(t.a) --print field
+			print(t:checkself({})) --test c++ class as a callback parameter
+			print(t:checkself(t)) --test c++ class as a callback parameter
 		)LUA");
 			s();
 			cout << s.error << endl;

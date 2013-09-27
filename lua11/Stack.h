@@ -50,7 +50,7 @@ namespace lua11
 			{ \
 				push(L, KV); \
 				push(L, v); \
-				F(L, i - 2); \
+				F(L, i < 0 ? i - 2 : i); \
 			} 
 
 		SET(set, const string& key, lua_settable, key.c_str()) \
@@ -65,7 +65,7 @@ namespace lua11
 			{ \
 				bool result = false; \
 				Stack::push(L, KV); \
-				F(L, i - 1); \
+				F(L, i < 0 ? i - 1 : i); \
 				if(is(L, p)) \
 				{ \
 					Stack::pop(L, p); \
@@ -151,9 +151,9 @@ namespace lua11
 
 		template <class T> void get(lua_State* L, T** p, int i = -1) 
 		{ 
-			p = nullptr;
+			*p = nullptr;
 			string type;
-			get(L, "__type", &type, i) && typeid(T).name() == type && get(L, "__ptr", (void**)&ptr, i);
+			get(L, "__type", &type, i) && typeid(T).name() == type && get(L, "__ptr", (void**)p, i);
 		}
 
 		template <typename T> void pop(lua_State* L, T* p, int i = -1) { get(L, p, i); lua_remove(L, i); }
