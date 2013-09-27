@@ -171,15 +171,13 @@ namespace lua11
 			return result;
 		}
 
-#		define _SET(T, N, K, F, KV) \
+#		define _SET(T, N, K, KV) \
 			bool N(K, T v) \
 			{ \
 				bool result = false; \
 				if(TableRef::push(L)) \
 				{ \
-					Stack::push(L, KV); \
-					Stack::push(L, v); \
-					F(L, -3); \
+					Stack::N<T>(L, KV, v); \
 					result = true; \
 				} \
 				lua_pop(L, 1); \
@@ -187,10 +185,10 @@ namespace lua11
 			} 
 
 #		define SET(T) \
-			_SET(T, set, const string& key, lua_settable, key.c_str()) \
-			_SET(T, set, int key, lua_settable, key) \
-			_SET(T, rawset, const string& key, lua_rawset, key.c_str()) \
-			_SET(T, rawset, int key, lua_rawset, key)
+			_SET(T, set, const string& key, key.c_str()) \
+			_SET(T, set, int key, key) \
+			_SET(T, rawset, const string& key, key.c_str()) \
+			_SET(T, rawset, int key, key)
 
 		SET(bool)
 		SET(unsigned char)
@@ -218,34 +216,26 @@ namespace lua11
 #		undef SET
 #		undef _SET
 
-#		define _GET(T, N, K, F, KV)	\
+#		define _GET(T, N, K, KV)	\
 			bool N(K, T* p) \
 			{ \
 				bool result = false; \
 				if(TableRef::push(L)) \
 				{ \
-					Stack::push(L, KV); \
-					F(L, -2); \
-					if(is(L, p)) \
-					{ \
-						Stack::pop(L, p); \
+					if (Stack::N(L, KV, p)) \
 						result = true; \
-					} \
 					else \
-					{ \
 						::error = error = string("type mismatch "#T" <> ") + lua_typename(L, lua_type(L, -1)); \
-						lua_pop(L, 1); \
-					} \
 				} \
 				lua_pop(L, 1); \
 				return result; \
 			} 
 
 #		define GET(T) \
-			_GET(T, get, const string& key, lua_gettable, key.c_str()) \
-			_GET(T, get, int key, lua_gettable, key) \
-			_GET(T, rawget, const string& key, lua_rawget, key.c_str()) \
-			_GET(T, rawget, int key, lua_rawget, key)
+			_GET(T, get, const string& key, key.c_str()) \
+			_GET(T, get, int key, key) \
+			_GET(T, rawget, const string& key, key.c_str()) \
+			_GET(T, rawget, int key, key)
 
 		GET(bool)
 		GET(unsigned char)

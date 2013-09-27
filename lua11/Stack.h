@@ -45,6 +45,43 @@ namespace lua11
 			file.close();
 		}
 
+#		define SET(N, K, F, KV) \
+			template <typename T> void N(lua_State* L, K, T v, int i = -1) \
+			{ \
+				push(L, KV); \
+				push(L, v); \
+				F(L, i - 2); \
+			} 
+
+		SET(set, const string& key, lua_settable, key.c_str()) \
+		SET(set, int key, lua_settable, key) \
+		SET(rawset, const string& key, lua_rawset, key.c_str()) \
+		SET(rawset, int key, lua_rawset, key)
+
+#		undef SET
+
+#		define GET(N, K, F, KV)	\
+			template <typename T> bool N(lua_State* L, K, T* p, int i = -1) \
+			{ \
+				bool result = false; \
+				Stack::push(L, KV); \
+				F(L, i - 1); \
+				if(is(L, p)) \
+				{ \
+					Stack::pop(L, p); \
+					result = true; \
+				} \
+				else lua_pop(L, 1); \
+				return result; \
+			} 
+
+		GET(get, const string& key, lua_gettable, key.c_str()) \
+		GET(get, int key, lua_gettable, key) \
+		GET(rawget, const string& key, lua_rawget, key.c_str()) \
+		GET(rawget, int key, lua_rawget, key)
+
+#		undef GET
+
 		void push(lua_State* L, bool p) { lua_pushboolean(L, p); }
 		void push(lua_State* L, unsigned char p) { lua_pushunsigned(L, p); }
 		void push(lua_State* L, char p) { lua_pushinteger(L, p); }
@@ -109,6 +146,8 @@ namespace lua11
 		void get(lua_State* L, ValueRef* p, int i = -1) { p->Ref::pop(L, i); }
 		void get(lua_State* L, NilRef* p, int i = -1) { p->Ref::pop(L, i); }
 		void get(lua_State* L, CallbackRef* p, int i = -1) { p->Ref::pop(L, i); }
+
+		//template <class T> void get(lua_State* L, T** p, int i = -1) { p->Ref::pop(L, i); }
 
 #		define POP(T) void pop(lua_State* L, T* p, int i = -1) { get(L, p, i); lua_remove(L, i); }
 
