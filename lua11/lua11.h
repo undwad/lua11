@@ -36,9 +36,9 @@ static string error;
 #include "stdmisc.h"
 #include "Ref.h"
 #include "Stack.h"
+#include "Table.h"
 #include "Value.h"
 #include "Function.h"
-#include "Table.h"
 #include "Callback.h"
 #include "Class.h"
 
