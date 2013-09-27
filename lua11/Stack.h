@@ -126,6 +126,8 @@ namespace lua11
 		bool is(lua_State* L, NilRef* p, int i = -1) { return lua_isnil(L, i); }
 		bool is(lua_State* L, CallbackRef* p, int i = -1) { return lua_iscfunction(L, i); }
 
+		template <class T> bool is(lua_State* L, T** p, int i = -1) { return lua_istable(L, i); }
+
 		void get(lua_State* L, bool* p, int i = -1) { *p = lua_toboolean(L, i); }
 		void get(lua_State* L, unsigned char* p, int i = -1) { *p = lua_tounsigned(L, i); }
 		void get(lua_State* L, char* p, int i = -1) { *p = lua_tointeger(L, i); }
@@ -147,30 +149,14 @@ namespace lua11
 		void get(lua_State* L, NilRef* p, int i = -1) { p->Ref::pop(L, i); }
 		void get(lua_State* L, CallbackRef* p, int i = -1) { p->Ref::pop(L, i); }
 
-		//template <class T> void get(lua_State* L, T** p, int i = -1) { p->Ref::pop(L, i); }
+		template <class T> void get(lua_State* L, T** p, int i = -1) 
+		{ 
+			p = nullptr;
+			string type;
+			get(L, "__type", &type, i) && typeid(T).name() == type && get(L, "__ptr", (void**)&ptr, i);
+		}
 
-#		define POP(T) void pop(lua_State* L, T* p, int i = -1) { get(L, p, i); lua_remove(L, i); }
-
-		POP(bool)
-		POP(unsigned char)
-		POP(char)
-		POP(short int)
-		POP(unsigned short int)
-		POP(int)
-		POP(unsigned int)
-		POP(long int)
-		POP(unsigned long)
-		POP(long long)
-		POP(unsigned long long)
-		POP(float)
-		POP(double)
-		POP(void*)
-		POP(string)
-		POP(FunctionRef)
-		POP(TableRef)
-		POP(ValueRef)
-		POP(NilRef)
-		POP(CallbackRef)
+		template <typename T> void pop(lua_State* L, T* p, int i = -1) { get(L, p, i); lua_remove(L, i); }
 
 #		undef POP
 
