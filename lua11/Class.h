@@ -73,7 +73,7 @@ namespace lua11
 
 		Class<T>& initL() { return initL("__init"); }
 
-		template <typename R, typename ...P> Class<T>& set(const string& name, R(T::*func)(P...))
+		template <typename R, typename ...P> Class<T>& func(const string& name, R(T::*func)(P...))
 		{
 			if (table)
 			{
@@ -88,7 +88,7 @@ namespace lua11
 			return *this;
 		}
 
-		template <typename R, typename ...P> Class<T>& set(const string& name, R(*func)(P...))
+		template <typename R, typename ...P> Class<T>& func(const string& name, R(*func)(P...))
 		{
 			if (table)
 			{

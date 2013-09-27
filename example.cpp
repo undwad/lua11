@@ -292,11 +292,11 @@ int main(int argc, char* argv[])
 			.init() //define constructor "init"
 			.initL("__initl") //define alternative constructor "inits"
 			.initL<string>("__inits") //define alternative constructor "inits"
-			.set("print", &Test::print) //define function
-			.set("add", &Test::add) //define function
-			.set("checkself", &Test::checkself) //define function
-			.set("mul", &Test::mul) //define static function
-			.set("getstr", &Test::getstr) //define static function
+			.func("print", &Test::print) //define function
+			.func("add", &Test::add) //define function
+			.func("checkself", &Test::checkself) //define function
+			.func("mul", &Test::mul) //define static function
+			.func("getstr", &Test::getstr) //define static function
 			.set("typeinfo", "test c++ type"); //define static field
 		if (!test) //check for error
 			print(test.error()); //print error
