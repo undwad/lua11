@@ -52,6 +52,8 @@ namespace lua11
 		operator bool() { return index && LUA_NOREF != *index; }
 		bool operator !() { return index && LUA_NOREF == *index; }
 
+		void copy(const RegistryRef& r) { index = r.index; }
+
 	protected:
 		virtual bool pop(lua_State* L) 
 		{ 
