@@ -16,9 +16,9 @@
 
 using namespace lua11;
 
-//next macro saves current lua stack to the text file
+//next macro saves current lua stack and registry to the text file
 //you can open the file (with for example far manager) to check for lua stack leaks at runtime
-#define SAVESTACK lua11::Stack::save(&*L, "stack.txt");
+#define DUMP LUA11DUMP(&*L)
 
 int main(int argc, char* argv[])
 {
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 		else
 			cout << script.error << endl; //print error
 
-		SAVESTACK
+		DUMP
 	}
 
 	//EXAMPLE 2
@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
 		else
 			cout << script.error << endl; //print error
 
-		SAVESTACK
+		DUMP
 	}
 	//every function returns boolean result where true means ok and false means error
 	//every class has string error field that should be checked on error
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 			}
 		}
 
-		SAVESTACK
+		DUMP
 	}
 
 	//EXAMPLE 4
@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 			print(v); //print it
 		print(value.type(), value.typeName()); //print value type and name
 
-		SAVESTACK
+		DUMP
 	}
 
 	//EXAMPLE 4
@@ -219,6 +219,19 @@ int main(int argc, char* argv[])
 		auto callback2 = MAKECALLBACK(&*L, proc); //callback holds std::function<void(string)>
 		callback2.setGlobal("proc"); //sets callback as global function
 		ScriptText(&*L, "print(proc('some text', 'excess param'))")(); //test it
+
+		Function F;
+		auto setfunction = MAKECALLBACK(&*L, [&](Function f) { F = f; }); //callback holds std::function<void(Function)>
+		setfunction.setGlobal("setfunction");
+		//auto getfunction = MAKECALLBACK(&*L, [&]() { return F; }); //callback holds std::function<Function(void)>
+		//thanks to visual studio c++ compiler bug it is not possible to define parameterless callbacks
+		auto getfunction = MAKECALLBACK(&*L, [&](Nil) { return F; }); //callback holds std::function<Function(Nil)>
+		getfunction.setGlobal("getfunction");
+		ScriptText(&*L, "print(getfunction(nil))")(); //print function
+		ScriptText(&*L, "setfunction(function () print 'hellow' end)")(); //set function
+		ScriptText(&*L, "print(getfunction(nil))")(); //print function
+		ScriptText(&*L, "print(getfunction(nil)())")(); //print function result
+
 		
 		ScriptText(&*L, "print(table.someparam)")(); //print our table's absent parameter
 
@@ -261,7 +274,7 @@ int main(int argc, char* argv[])
 				print(metatable); //print result
 		}
 
-		SAVESTACK
+		DUMP
 	}
 
 	//EXAMPLE 5
@@ -333,7 +346,7 @@ int main(int argc, char* argv[])
 			cout << s.error << endl;
 		}
 
-		SAVESTACK
+		DUMP
 	}
 
 	cout << "EXIT" << endl;

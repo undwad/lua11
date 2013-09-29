@@ -34,6 +34,7 @@ static string error;
 #pragma warning(disable : 4244)
 
 #include "stdmisc.h"
+#include "Debug.h"
 #include "Ref.h"
 #include "Stack.h"
 #include "Table.h"

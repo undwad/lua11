@@ -122,6 +122,7 @@ namespace lua11
 		friend class Stack;
 
 	public:
+		NilRef() { }
 		NilRef(lua_State* l) : Ref(l) { }
 		virtual ~NilRef() { }
 

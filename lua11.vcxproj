@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lua11\Callback.h" />
+    <ClInclude Include="lua11\Debug.h" />
     <ClInclude Include="lua11\lua\lapi.h" />
     <ClInclude Include="lua11\lua\lauxlib.h" />
     <ClInclude Include="lua11\lua\lcode.h" />

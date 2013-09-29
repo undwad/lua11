@@ -13,6 +13,7 @@ namespace lua11
 	class Nil : public NilRef
 	{
 	public:
+		Nil() { }
 		Nil(lua_State* l) : NilRef(l) { }
 		virtual ~Nil() { }
 	};

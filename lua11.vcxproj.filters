@@ -202,6 +202,9 @@
     <ClInclude Include="lua11\Class.h">
       <Filter>lua11</Filter>
     </ClInclude>
+    <ClInclude Include="lua11\Debug.h">
+      <Filter>lua11</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="lua11">
