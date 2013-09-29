@@ -58,6 +58,7 @@ build/ai.bat
 *.db*
 *.journal
 stack.txt
+lua11dump.txt
 
 Debug/
 Release/

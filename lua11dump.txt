@@ -1,0 +1,11 @@
+STACK
+
+REGISTRY
+1: thread 007BB3F0
+2: table 007BB7E0
+3: function 000B3420
+4: number 5
+5: number 6
+6: number 7
+7: number 8
+8: number 9

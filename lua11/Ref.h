@@ -57,6 +57,7 @@ namespace lua11
 	protected:
 		virtual bool pop(lua_State* L) 
 		{ 
+			LUA11DUMP(L)
 			free();
 			index = luaL_ref(L, LUA_REGISTRYINDEX);
 			return LUA_NOREF != index;
