@@ -51,12 +51,14 @@ namespace lua11
 			return false;
 		}
 
-		int paramerror()
+		int texterror(const string& text)
 		{
 			lua_pushnil(L);
-			lua_pushstring(L, "invalid callback parameters or result");
+			lua_pushstring(L, text.c_str());
 			return 2;
 		}
+		int paramerror() { return texterror("invalid callback parameters"); }
+		int resulterror() { return texterror("invalid callback result"); }
 
 		template<typename Q> int callfunc(lua_State *L, function<void()>)
 		{
@@ -68,7 +70,7 @@ namespace lua11
 		{
 			if(Stack::push(L, func()))
 				return 1;
-			else return paramerror();
+			else return resulterror();
 		}
 
 		template<typename ...P> int callfunc(lua_State *L, function<void(P...)>)
@@ -87,8 +89,12 @@ namespace lua11
 		{
 			tuple<P...> p;
 			auto params = misc::make_function([this, L](P&... p) { return param(L, 1, p...); });
-			if (misc::forwardref(p, params) && Stack::push(L, misc::forward(p, func)))
-				return 1;
+			if (misc::forwardref(p, params))
+			{
+				if(Stack::push(L, misc::forward(p, func)))
+					return 1;
+				else return resulterror();
+			}
 			else return paramerror();
 		}
 

@@ -44,43 +44,42 @@ namespace lua11
 		friend class Stack;
 
 	public:
-		RegistryRef() : index(LUA_NOREF) { }
-		RegistryRef(lua_State* l) : Ref(l), index(LUA_NOREF) { }
-		RegistryRef(const RegistryRef& r) : Ref(r), index(LUA_NOREF) { copy(r); }
-		virtual ~RegistryRef() { free(); }
+		RegistryRef() { }
+		RegistryRef(lua_State* l) : Ref(l) { }
+		RegistryRef(const RegistryRef& r) : Ref(r), index(r.index) { }
+		virtual ~RegistryRef() { }
 
-		bool copy(const RegistryRef& r) { return r.push(L) && pop(L); }
-
-		operator bool() { return LUA_NOREF != index; }
-		bool operator !() { return LUA_NOREF == index; }
+		operator bool() { return index && LUA_NOREF != *index; }
+		bool operator !() { return index && LUA_NOREF == *index; }
 
 	protected:
 		virtual bool pop(lua_State* L) 
 		{ 
-			LUA11DUMP(L)
-			free();
-			index = luaL_ref(L, LUA_REGISTRYINDEX);
-			return LUA_NOREF != index;
+			index = shared_ptr<int>(new int(luaL_ref(L, LUA_REGISTRYINDEX)), bind(free, L, _1));
+			return LUA_NOREF != *index;
 		}
 
 		virtual bool push(lua_State* L) const
 		{
-			if (LUA_NOREF != index)
+			if (index && LUA_NOREF != *index)
 			{
-				lua_rawgeti(L, LUA_REGISTRYINDEX, index);
+				lua_rawgeti(L, LUA_REGISTRYINDEX, *index);
 				return true;
 			}
 			return false;
 		}
 
 	private:
-		int index;
+		shared_ptr<int> index;
 
-		void free()
+		static void free(lua_State* L, int* index)
 		{
-			if (LUA_NOREF != index)
-				luaL_unref(L, LUA_REGISTRYINDEX, index);
-			index = LUA_NOREF;
+			if (index)
+			{
+				if (LUA_NOREF != *index)
+					luaL_unref(L, LUA_REGISTRYINDEX, *index);
+				delete index;
+			}
 		}
 	};
 

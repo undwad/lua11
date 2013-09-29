@@ -23,7 +23,7 @@ namespace lua11
 			}
 			stream << endl;
 			stream << "REGISTRY" << endl;
-			for (int i = 1; i <= lua_rawlen(L, LUA_REGISTRYINDEX); i++)
+			for (unsigned int i = 1; i <= lua_rawlen(L, LUA_REGISTRYINDEX); i++)
 			{
 				stream << i << ": ";
 				lua_rawgeti(L, LUA_REGISTRYINDEX, i);
