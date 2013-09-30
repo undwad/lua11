@@ -16,7 +16,7 @@ namespace lua11
 		Class(lua_State* l, const string& name) : L(l), table(L)
 		{ 
 			callbacks = new vector<shared_ptr<CallbackRef>>();
-			if (table.createNew() && table.setGlobal(name) && table.set("type", typeid(T).hash_code()))
+			if (table.createNew() && table.setGlobal(name) && table.set("__type", typeid(T).name()))
 			{
 				auto callback = MAKECALLBACKPTR(L, [](Table t)
 				{

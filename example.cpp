@@ -316,7 +316,7 @@ int main(int argc, char* argv[])
 
 		{
 			ScriptText s(&*L, R"LUA(
-			print(Test, Test.type, Test.typeinfo) --print type info
+			print(Test, Test.__type, Test.typeinfo) --print type info
 			print(Test:mul(100,6)) --test static function
 			print(Test:getstr()) --test static function
 			require 'class' --import class module
