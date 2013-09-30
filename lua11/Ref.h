@@ -50,9 +50,29 @@ namespace lua11
 		virtual ~RegistryRef() { }
 
 		operator bool() { return index && LUA_NOREF != *index; }
-		bool operator !() { return index && LUA_NOREF == *index; }
+		bool operator !() { return !index || LUA_NOREF == *index; }
 
 		void copy(const RegistryRef& r) { index = r.index; }
+
+		friend bool operator ==(RegistryRef& r1, RegistryRef& r2)
+		{
+			bool result = false;
+			if (r1 && r2)
+			{
+				if (r1.push(r1.L))
+				{
+					if (r2.push(r2.L))
+					{
+						result = lua_rawequal(r1.L, -1, -2);
+						lua_pop(r2.L, 1);
+					}
+					lua_pop(r1.L, 1);
+				}
+			}
+			return result;
+		}
+
+		friend bool operator !=(RegistryRef& r1, RegistryRef& r2) { return !(r1 == r2); }
 
 	protected:
 		virtual bool pop(lua_State* L) 

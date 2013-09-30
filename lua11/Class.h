@@ -98,6 +98,16 @@ namespace lua11
 			return *this;
 		}
 
+		template <typename R, typename ...P> Class<T>& func(const string& name, function<R(P...)> func)
+		{
+			if (table)
+			{
+				auto callback = MAKECALLBACKPTR(L, [func](Table t, P... p) { return func(p...); });
+				store(name, callback);
+			}
+			return *this;
+		}
+
 		template <typename P> Class<T>& set(const string& name, P p)
 		{
 			if (table)
