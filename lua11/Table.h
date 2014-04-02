@@ -34,6 +34,12 @@ namespace lua11
 			return TableRef::pop(L);
 		}
 
+		bool createNew(int narr, int nrec)
+		{
+			lua_createtable(L, narr, nrec);
+			return TableRef::pop(L);
+		}
+
 		bool setGlobal(const string& name)
 		{
 			if(TableRef::push(L))
