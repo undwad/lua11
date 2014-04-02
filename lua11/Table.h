@@ -28,13 +28,7 @@ namespace lua11
 			return false;
 		}
 
-		bool createNew() 
-		{
-			lua_newtable(L); 
-			return TableRef::pop(L);
-		}
-
-		bool createNew(int narr, int nrec)
+		bool createNew(int narr = 0, int nrec = 0)
 		{
 			lua_createtable(L, narr, nrec);
 			return TableRef::pop(L);
