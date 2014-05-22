@@ -1,102 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="lua11\lua\lapi.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lauxlib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lbaselib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lbitlib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lcode.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lcorolib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lctype.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\ldblib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\ldebug.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\ldo.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\ldump.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lfunc.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lgc.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\linit.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\liolib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\llex.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lmathlib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lmem.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\loadlib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lobject.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lopcodes.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\loslib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lparser.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lstate.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lstring.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lstrlib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\ltable.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\ltablib.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\ltm.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lundump.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lvm.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua11\lua\lzio.c">
-      <Filter>lua11\lua</Filter>
-    </ClCompile>
     <ClCompile Include="example.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -121,81 +25,6 @@
     <ClInclude Include="lua11\stdmisc.h">
       <Filter>lua11</Filter>
     </ClInclude>
-    <ClInclude Include="lua11\lua\lapi.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lauxlib.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lcode.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lctype.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\ldebug.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\ldo.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lfunc.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lgc.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\llex.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\llimits.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lmem.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lobject.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lopcodes.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lparser.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lstate.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lstring.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\ltable.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\ltm.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lua.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lua.hpp">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\luaconf.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lualib.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lundump.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lvm.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua11\lua\lzio.h">
-      <Filter>lua11\lua</Filter>
-    </ClInclude>
     <ClInclude Include="lua11\Value.h">
       <Filter>lua11</Filter>
     </ClInclude>
@@ -209,9 +38,6 @@
   <ItemGroup>
     <Filter Include="lua11">
       <UniqueIdentifier>{47c89365-ec5b-4267-aeca-e3a047c2fc67}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="lua11\lua">
-      <UniqueIdentifier>{031a87c4-10b3-449c-a8a2-bd0afb43914d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

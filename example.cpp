@@ -16,6 +16,8 @@
 
 using namespace lua11;
 
+#pragma comment(lib, "liblua52.a")
+
 //next macro saves current lua stack and registry to the text file
 //you can open the file (with for example far manager) to check for lua stack leaks at runtime
 #define DUMP LUA11DUMP(&*L)
