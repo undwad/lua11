@@ -285,7 +285,10 @@ int main(int argc, char* argv[])
 			Test() { cout << "Test()" << endl; } 
 			Test(lua_State* l) { cout << "Test(" << (void*)l << ")" << endl; }
 			Test(lua_State* l, string s) { cout << "Test(" << (void*)l << ", " << s << ")" << endl; }
-			~Test() { cout << "~Test()" << endl; }
+			~Test() 
+			{ 
+				cout << "~Test()" << endl; 
+			}
 			void print(string s) { cout << "print " << s << endl; } //test function
 			int add(int a, int b) //test function
 			{ 
@@ -328,7 +331,8 @@ int main(int argc, char* argv[])
 				self.a = 'A' --initialize field
 			end
 			function Test:__gc() --define destructor
-				Test.base.__gc(self) --callbase destructor
+				print 'destroy'
+				Test.__base.__gc(self) --callbase destructor
 			end
 			function Test:print2(s) --define function
 				print('print2', s)
