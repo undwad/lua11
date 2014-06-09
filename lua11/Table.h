@@ -288,7 +288,7 @@ TYPENAME(int key, key)
 
 #		undef TYPENAME
 
-		template <typename T> T getOrDefault(const string& name, T defval = T())
+		template <typename T> T getOrDefault(const string& name, T defval)
 		{
 			T result = defval;
 			get(name, &result);
@@ -296,7 +296,7 @@ TYPENAME(int key, key)
 		}
 
 
-		template <typename T> T get(const string& name) { return getOrDefault(name); }
+		template <typename T> T get(const string& name) { return getOrDefault(name, T()); }
 
 		template <class T> T* getptr()
 		{
