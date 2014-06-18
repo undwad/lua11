@@ -53,6 +53,8 @@ namespace lua11
 		operator bool() { return index && LUA_NOREF != *index; }
 		bool operator !() { return !index || LUA_NOREF == *index; }
 
+		operator int() { return *index; }
+
 		void copy(const RegistryRef& r) { index = r.index; }
 
 		friend bool operator ==(RegistryRef& r1, RegistryRef& r2)
