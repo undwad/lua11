@@ -17,6 +17,7 @@ namespace lua11
 		Table(lua_State* l) : TableRef(l) {}
 		Table(lua_State* l, const string& name) : TableRef(l) { getGlobal(name); }
 		Table(const Table& t) : TableRef(t) { }
+		Table(lua_State* l, int i) : TableRef(l, i) { }
 		virtual ~Table() { }
 
 		bool getGlobal(const string& name)

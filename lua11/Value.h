@@ -25,6 +25,7 @@ namespace lua11
 		Value(lua_State* l) : ValueRef(l) {}
 		Value(lua_State* l, const string& name) : ValueRef(l) { getGlobal(name); }
 		Value(const Value& v) : ValueRef(v) { }
+		Value(lua_State* l, int i) : ValueRef(l, i) { }
 		virtual ~Value() { }
 
 		bool getGlobal(const string& name)

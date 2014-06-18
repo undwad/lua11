@@ -47,6 +47,7 @@ namespace lua11
 		RegistryRef() { }
 		RegistryRef(lua_State* l) : Ref(l) { }
 		RegistryRef(const RegistryRef& r) : Ref(r), index(r.index) { }
+		RegistryRef(lua_State* l, int i) : Ref(l), index(shared_ptr<int>(new int(i))) { }
 		virtual ~RegistryRef() { }
 
 		operator bool() { return index && LUA_NOREF != *index; }
@@ -111,6 +112,7 @@ namespace lua11
 		FunctionRef() { }
 		FunctionRef(lua_State* l) : RegistryRef(l) { }
 		FunctionRef(const FunctionRef& r) : RegistryRef(r) { }
+		FunctionRef(lua_State* l, int i) : RegistryRef(l, i) { }
 		virtual ~FunctionRef() { }
 	};
 
@@ -120,6 +122,7 @@ namespace lua11
 		TableRef() { }
 		TableRef(lua_State* l) : RegistryRef(l) { }
 		TableRef(const TableRef& r) : RegistryRef(r) { }
+		TableRef(lua_State* l, int i) : RegistryRef(l, i) { }
 		virtual ~TableRef() { }
 	};
 
@@ -129,6 +132,7 @@ namespace lua11
 		ValueRef() { }
 		ValueRef(lua_State* l) : RegistryRef(l) { }
 		ValueRef(const ValueRef& r) : RegistryRef(r) { }
+		ValueRef(lua_State* l, int i) : RegistryRef(l, i) { }
 		virtual ~ValueRef() { }
 	};
 

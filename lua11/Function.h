@@ -17,6 +17,7 @@ namespace lua11
 		Function(lua_State* l) : FunctionRef(l) { }
 		Function(lua_State* l, const string& name) : FunctionRef(l) { getGlobal(name); }
 		Function(const Function& f) : FunctionRef(f) { }
+		Function(lua_State* l, int i) : FunctionRef(l, i) { }
 		virtual ~Function() { }
 
 		bool getGlobal(const string& name)
